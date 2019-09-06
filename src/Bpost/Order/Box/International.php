@@ -1,30 +1,19 @@
 <?php
-
 namespace Bpost\BpostApiClient\Bpost\Order\Box;
 
-use Bpost\BpostApiClient\Bpost;
 use Bpost\BpostApiClient\Bpost\Order\Box\CustomsInfo\CustomsInfo;
-use Bpost\BpostApiClient\Bpost\Order\Box\International\ParcelContent;
 use Bpost\BpostApiClient\Bpost\Order\Box\Option\Messaging;
 use Bpost\BpostApiClient\Bpost\Order\Box\Option\Option;
 use Bpost\BpostApiClient\Bpost\Order\Receiver;
 use Bpost\BpostApiClient\Bpost\ProductConfiguration\Product;
-use Bpost\BpostApiClient\Common\XmlHelper;
-use Bpost\BpostApiClient\Exception\BpostLogicException\BpostInvalidLengthException;
 use Bpost\BpostApiClient\Exception\BpostLogicException\BpostInvalidValueException;
 use Bpost\BpostApiClient\Exception\BpostNotImplementedException;
-use DomDocument;
-use DomElement;
-use DOMException;
-use SimpleXMLElement;
 
 /**
  * bPost International class
  *
  * @author    Tijs Verkoyen <php-bpost@verkoyen.eu>
- *
  * @version   3.0.0
- *
  * @copyright Copyright (c), Tijs Verkoyen. All rights reserved.
  * @license   BSD License
  */
@@ -33,15 +22,15 @@ class International implements IBox
     /**
      * @var string
      */
-    protected $product;
+    private $product;
 
     /**
      * @var array
      */
-    private $options = array();
+    private $options;
 
     /**
-     * @var Receiver
+     * @var \Bpost\BpostApiClient\Bpost\Order\Receiver
      */
     private $receiver;
 
@@ -51,20 +40,12 @@ class International implements IBox
     private $parcelWeight;
 
     /**
-     * @var CustomsInfo
+     * @var \Bpost\BpostApiClient\Bpost\Order\Box\CustomsInfo\CustomsInfo
      */
     private $customsInfo;
 
     /**
-     * Only for shipments outside Europe.
-     * Might include from 1 to 10 “parcelContent”.
-     *
-     * @var array|ParcelContent[]
-     */
-    private $parcelContents = array();
-
-    /**
-     * @param CustomsInfo $customsInfo
+     * @param \Bpost\BpostApiClient\Bpost\Order\Box\CustomsInfo\CustomsInfo $customsInfo
      */
     public function setCustomsInfo($customsInfo)
     {
@@ -72,7 +53,7 @@ class International implements IBox
     }
 
     /**
-     * @return CustomsInfo
+     * @return \Bpost\BpostApiClient\Bpost\Order\Box\CustomsInfo\CustomsInfo
      */
     public function getCustomsInfo()
     {
@@ -121,7 +102,6 @@ class International implements IBox
 
     /**
      * @param string $product
-     *
      * @throws BpostInvalidValueException
      */
     public function setProduct($product)
@@ -151,12 +131,11 @@ class International implements IBox
             Product::PRODUCT_NAME_BPACK_WORLD_EASY_RETURN,
             Product::PRODUCT_NAME_BPACK_WORLD_EXPRESS_PRO,
             Product::PRODUCT_NAME_BPACK_EUROPE_BUSINESS,
-            Product::PRODUCT_NAME_BPACK_AT_BPOST_INTERNATIONAL,
         );
     }
 
     /**
-     * @param Receiver $receiver
+     * @param \Bpost\BpostApiClient\Bpost\Order\Receiver $receiver
      */
     public function setReceiver($receiver)
     {
@@ -164,116 +143,11 @@ class International implements IBox
     }
 
     /**
-     * @return Receiver
+     * @return \Bpost\BpostApiClient\Bpost\Order\Receiver
      */
     public function getReceiver()
     {
         return $this->receiver;
-    }
-
-    /**
-     * @return array|ParcelContent[]
-     */
-    public function getParcelContents()
-    {
-        return $this->parcelContents;
-    }
-
-    /**
-     * @param array|ParcelContent[] $parcelContents
-     *
-     * @return self
-     *
-     * @throws BpostInvalidValueException
-     */
-    public function setParcelContents(array $parcelContents)
-    {
-        foreach ($parcelContents as $parcelContent) {
-            if (!$parcelContent instanceof ParcelContent) {
-                throw new BpostInvalidValueException(
-                    'parcelContents',
-                    get_class($parcelContent),
-                    array('Bpost\BpostApiClient\Bpost\Order\Box\International\ParcelContent')
-                );
-            }
-
-            $this->addParcelContent($parcelContent);
-        }
-
-        return $this;
-    }
-
-    public function addParcelContent(ParcelContent $parcelContent)
-    {
-        $this->parcelContents[] = $parcelContent;
-    }
-
-    /**
-     * Return the object as an array for usage in the XML
-     *
-     * @param DomDocument $document
-     * @param string      $prefix
-     *
-     * @return DOMElement
-     *
-     * @throws DOMException
-     */
-    public function toXML(DOMDocument $document, $prefix = null)
-    {
-        $internationalBox = $document->createElement(XmlHelper::getPrefixedTagName('internationalBox', $prefix));
-        $prefix = 'international';
-        $international = $document->createElement(XmlHelper::getPrefixedTagName('international', $prefix));
-        $internationalBox->appendChild($international);
-
-        if ($this->getProduct() !== null) {
-            $international->appendChild(
-                $document->createElement(XmlHelper::getPrefixedTagName('product', $prefix), $this->getProduct())
-            );
-        }
-
-        $options = $this->getOptions();
-        if (!empty($options)) {
-            $optionsElement = $document->createElement(XmlHelper::getPrefixedTagName('options', $prefix));
-            foreach ($options as $option) {
-                $optionsElement->appendChild(
-                    $option->toXML($document, 'common')
-                );
-            }
-            $international->appendChild($optionsElement);
-        }
-
-        if ($this->getReceiver() !== null) {
-            $international->appendChild(
-                $this->getReceiver()->toXML($document, $prefix)
-            );
-        }
-
-        if ($this->getParcelWeight() !== null) {
-            $international->appendChild(
-                $document->createElement(
-                    XmlHelper::getPrefixedTagName('parcelWeight', $prefix),
-                    $this->getParcelWeight()
-                )
-            );
-        }
-
-        if ($this->getCustomsInfo() !== null) {
-            $international->appendChild(
-                $this->getCustomsInfo()->toXML($document, $prefix)
-            );
-        }
-
-        if ($this->getParcelContents()) {
-            $parcelContents = $document->createElement(XmlHelper::getPrefixedTagName('parcelContents', $prefix));
-            foreach ($this->getParcelContents() as $parcelContent) {
-                $parcelContents->appendChild(
-                    $parcelContent->toXML($document, $prefix)
-                );
-            }
-            $international->appendChild($parcelContents);
-        }
-
-        return $internationalBox;
     }
 
     /**
@@ -283,18 +157,25 @@ class International implements IBox
      * @param  string       $prefix
      * @return \DomElement
      */
-    public function toPugoXML(\DOMDocument $document, $prefix = null, $tagName = 'internationalBox')
+    public function toXML(\DOMDocument $document, $prefix = null)
     {
-        if ($tagName != "atIntlPugo") {
-            throw new \Exception("tagName is not correct :". $tagName." instead of atIntlPugo", 1);
-        }
+        $tagName = 'internationalBox';
         if ($prefix !== null) {
             $tagName = $prefix . ':' . $tagName;
         }
 
         $internationalBox = $document->createElement($tagName);
-        $international = $document->createElement('international:product', Product::PRODUCT_NAME_BPACK_AT_BPOST_INTERNATIONAL);
+        $international = $document->createElement('international:international');
         $internationalBox->appendChild($international);
+
+        if ($this->getProduct() !== null) {
+            $international->appendChild(
+                $document->createElement(
+                    'international:product',
+                    $this->getProduct()
+                )
+            );
+        }
 
         $options = $this->getOptions();
         if (!empty($options)) {
@@ -304,17 +185,17 @@ class International implements IBox
                     $option->toXML($document)
                 );
             }
-            $internationalBox->appendChild($optionsElement);
+            $international->appendChild($optionsElement);
         }
 
         if ($this->getReceiver() !== null) {
-            $internationalBox->appendChild(
+            $international->appendChild(
                 $this->getReceiver()->toXML($document, 'international')
             );
         }
 
         if ($this->getParcelWeight() !== null) {
-            $internationalBox->appendChild(
+            $international->appendChild(
                 $document->createElement(
                     'international:parcelWeight',
                     $this->getParcelWeight()
@@ -323,7 +204,7 @@ class International implements IBox
         }
 
         if ($this->getCustomsInfo() !== null) {
-            $internationalBox->appendChild(
+            $international->appendChild(
                 $this->getCustomsInfo()->toXML($document, 'international')
             );
         }
@@ -332,15 +213,13 @@ class International implements IBox
     }
 
     /**
-     * @param SimpleXMLElement $xml
+     * @param  \SimpleXMLElement $xml
      *
      * @return International
-     *
-     * @throws BpostInvalidLengthException
      * @throws BpostInvalidValueException
      * @throws BpostNotImplementedException
      */
-    public static function createFromXML(SimpleXMLElement $xml)
+    public static function createFromXML(\SimpleXMLElement $xml)
     {
         $international = new International();
 
@@ -350,23 +229,28 @@ class International implements IBox
             );
         }
         if (isset($xml->international->options)) {
-            /** @var SimpleXMLElement $optionData */
-            $options = $xml->international->options->children(Bpost::NS_V3_COMMON);
-            foreach ($options as $optionData) {
-                switch ($optionData->getName()) {
-                    case Messaging::MESSAGING_TYPE_INFO_DISTRIBUTED:
-                    case Messaging::MESSAGING_TYPE_KEEP_ME_INFORMED:
-                    case Messaging::MESSAGING_TYPE_INFO_REMINDER:
-                    case Messaging::MESSAGING_TYPE_INFO_NEXT_DAY:
-                        $option = Messaging::createFromXML($optionData);
-                        break;
-                    default:
-                        $className = '\Bpost\BpostApiClient\Bpost\Order\Box\Option\\' . ucfirst($optionData->getName());
-                        XmlHelper::assertMethodCreateFromXmlExists($className);
-                        $option = call_user_func(
-                            array($className, 'createFromXML'),
-                            $optionData
-                        );
+            /** @var \SimpleXMLElement $optionData */
+            foreach ($xml->international->options as $optionData) {
+                $optionData = $optionData->children('http://schema.post.be/shm/deepintegration/v3/common');
+
+                if (in_array($optionData->getName(), array(Messaging::MESSAGING_TYPE_INFO_DISTRIBUTED))) {
+                    $option = Messaging::createFromXML($optionData);
+                } else {
+                    switch ($optionData->getName()) {
+                        case 'insured':
+                            $class = 'Insurance';
+                            break;
+                        default:
+                            $class = ucfirst($optionData->getName());
+                    }
+                    $className = '\\Bpost\\BpostApiClient\\Bpost\\Order\\Box\\Option\\' . $class;
+                    if (!method_exists($className, 'createFromXML')) {
+                        throw new BpostNotImplementedException('No createFromXML found into ' . $className);
+                    }
+                    $option = call_user_func(
+                        array($className, 'createFromXML'),
+                        $optionData
+                    );
                 }
 
                 $international->addOption($option);
@@ -378,7 +262,9 @@ class International implements IBox
             );
         }
         if (isset($xml->international->receiver)) {
-            $receiverData = $xml->international->receiver->children(Bpost::NS_V3_COMMON);
+            $receiverData = $xml->international->receiver->children(
+                'http://schema.post.be/shm/deepintegration/v3/common'
+            );
             $international->setReceiver(
                 Receiver::createFromXML($receiverData)
             );
@@ -388,29 +274,7 @@ class International implements IBox
                 CustomsInfo::createFromXML($xml->international->customsInfo)
             );
         }
-        if (isset($xml->international->parcelContents)) {
-            /** @var SimpleXMLElement $optionData */
-            $parcelContents = $xml->international->parcelContents->children('international', true);
-            foreach ($parcelContents as $parcelContentXml) {
-                $parcelContent = ParcelContent::createFromXML($parcelContentXml);
-                $international->addParcelContent($parcelContent);
-            }
-        }
 
         return $international;
-    }
-
-    /**
-     * Prefix $tagName with the $prefix, if needed
-     * @param string $prefix
-     * @param string $tagName
-     * @return string
-     */
-    public function getPrefixedTagName($tagName, $prefix = null)
-    {
-        if (empty($prefix)) {
-            return $tagName;
-        }
-        return $prefix . ':' . $tagName;
     }
 }
