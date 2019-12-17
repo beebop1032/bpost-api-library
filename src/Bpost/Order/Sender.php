@@ -20,8 +20,8 @@ class Sender extends Customer
      */
     public static function createFromXML(SimpleXMLElement $xml)
     {
-        $sender = new Sender();
-        $sender = parent::createFromXMLHelper($xml, $sender);
+        /** @var Sender $sender */
+        $sender = parent::createFromXMLHelper($xml, new Sender());
 
         return $sender;
     }

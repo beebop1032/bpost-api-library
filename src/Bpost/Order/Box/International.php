@@ -32,7 +32,7 @@ class International implements IBox
     /**
      * @var string
      */
-    private $product;
+    protected $product;
 
     /**
      * @var array
