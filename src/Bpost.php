@@ -414,6 +414,60 @@ class Bpost
     }
 
     /**
+     * Get List of Internationnal Pugo available near the shipping location
+     * @param  string   $userLanguage The language of the client (the only two letter of it. e.g. : fr/en/de/nl/...
+     * @param  string   $country      The country of the shipping Address (transform just below to take the first two letter)
+     * @param  string   $streetName   The street name of the shipping Address (transform just below to replace space into +)
+     * @param  int      $streetNumber The number of the house of the shipping Address
+     * @param  int      $postalCode   The postal code of the shipping Address
+     * @return SimpleXMLElement       Return the pugo point, if the pugo no more exist, return the first of the list
+     */
+    public function getPugoInformation($userLanguage, $country, $street, $streetNumber, $postalCode)
+    {
+        $country = substr($country, 0, 2);
+        $streetName = str_replace(" ", "+", $street);
+
+        $url = "http://pudo.bpost.be/Locator?Function=search".
+                "&Partner=".$this->accountId.
+                "&Language=".$userLanguage.
+                "&Zone=".$postalCode.
+                "&Country=".$country.
+                "&Type=2";
+
+        // build Authorization header
+        $headers[] = 'Authorization: Basic ' . $this->getAuthorizationHeader();
+
+        // set options
+        $options[CURLOPT_URL] = $url;
+        if ($this->getPort() != 0) {
+            $options[CURLOPT_PORT] = $this->getPort();
+        }
+        $options[CURLOPT_USERAGENT] = $this->getUserAgent();
+        $options[CURLOPT_RETURNTRANSFER] = true;
+        $options[CURLOPT_TIMEOUT] = (int)$this->getTimeOut();
+        $options[CURLOPT_HTTP_VERSION] = CURL_HTTP_VERSION_1_1;
+        $options[CURLOPT_HTTPHEADER] = $headers;
+
+        $this->getApiCaller()->doCall($options);
+
+        $response = $this->getApiCaller()->getResponseBody();
+
+        $Pois = simplexml_load_string($response)->PoiList->Poi;
+
+        $pugo = null;
+        foreach ($Pois as $Poi) {
+            if ((string) $Poi->Record->Street == $street && (string) $Poi->Record->Number == $streetNumber) {
+                $pugo = $Poi->Record;
+            }
+        }
+        if ($pugo == null) {
+            $pugo = $Pois[0]->Record;
+        }
+
+        return $pugo;
+    }
+
+    /**
      * Fetch an order
      *
      * @param string $reference
