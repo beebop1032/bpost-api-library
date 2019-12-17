@@ -1,15 +1,21 @@
 <?php
 namespace Bpost\BpostApiClient\Bpost\Order\Box;
 
-use Bpost\BpostApiClient\Bpost;
 use Bpost\BpostApiClient\Bpost\Order\Box\National\ShopHandlingInstruction;
-use Bpost\BpostApiClient\Bpost\Order\Box\Option\Messaging;
 use Bpost\BpostApiClient\Bpost\Order\PugoAddress;
-use Bpost\BpostApiClient\Bpost\Order\Receiver;
 use Bpost\BpostApiClient\Bpost\ProductConfiguration\Product;
+use Bpost\BpostApiClient\Bpost\Order\Box\Option\Messaging;
 use Bpost\BpostApiClient\Exception\BpostLogicException\BpostInvalidValueException;
 use Bpost\BpostApiClient\Exception\BpostNotImplementedException;
 
+/**
+ * bPost AtBpost class
+ *
+ * @author    Tijs Verkoyen <php-bpost@verkoyen.eu>
+ * @version   3.0.0
+ * @copyright Copyright (c), Tijs Verkoyen. All rights reserved.
+ * @license   BSD License
+ */
 class AtIntlPugo extends International
 {
     /** @var string */
@@ -21,7 +27,7 @@ class AtIntlPugo extends International
     /** @var string */
     private $pugoName;
 
-    /** @var PugoAddress */
+    /** @var \Bpost\BpostApiClient\Bpost\Order\PugoAddress */
     private $pugoAddress;
 
     /** @var string */
@@ -56,12 +62,11 @@ class AtIntlPugo extends International
     {
         return array(
             Product::PRODUCT_NAME_BPACK_AT_BPOST,
-            Product::PRODUCT_NAME_BPACK_AT_BPOST_INTERNATIONAL,
         );
     }
 
     /**
-     * @param PugoAddress $pugoAddress
+     * @param \Bpost\BpostApiClient\Bpost\Order\PugoAddress $pugoAddress
      */
     public function setPugoAddress($pugoAddress)
     {
@@ -69,7 +74,7 @@ class AtIntlPugo extends International
     }
 
     /**
-     * @return PugoAddress
+     * @return \Bpost\BpostApiClient\Bpost\Order\PugoAddress
      */
     public function getPugoAddress()
     {
@@ -238,25 +243,24 @@ class AtIntlPugo extends International
     /**
      * @param  \SimpleXMLElement $xml
      *
-     * @return AtIntlPugo
+     * @return AtBpost
      * @throws BpostInvalidValueException
      * @throws BpostNotImplementedException
      */
     public static function createFromXML(\SimpleXMLElement $xml)
     {
-        $self = new AtIntlPugo();
+        dump(__METHOD__);
+        $atBpost = new AtBpost();
 
-        if (isset($xml->atIntlPugo->product) && $xml->atIntlPugo->product != '') {
-            $self->setProduct(
-                (string)$xml->atIntlPugo->product
+        if (isset($xml->atBpost->product) && $xml->atBpost->product != '') {
+            $atBpost->setProduct(
+                (string)$xml->atBpost->product
             );
         }
-
-        //if (isset($xml->atBpost->options)) {
-        if (isset($xml->atIntlPugo->options)) {
+        if (isset($xml->atBpost->options)) {
             /** @var \SimpleXMLElement $optionData */
-            foreach ($xml->atIntlPugo->options as $optionData) {
-                $optionData = $optionData->children(Bpost::NS_V3_COMMON);
+            foreach ($xml->atBpost->options as $optionData) {
+                $optionData = $optionData->children('http://schema.post.be/shm/deepintegration/v3/common');
 
                 if (in_array(
                     $optionData->getName(),
@@ -270,8 +274,7 @@ class AtIntlPugo extends International
                 ) {
                     $option = Messaging::createFromXML($optionData);
                 } else {
-                    $className = '\\Bpost\\BpostApiClient\\Bpost\\Order\\Box\\Option\\'
-                        . ucfirst($optionData->getName());
+                    $className = '\\Bpost\\BpostApiClient\\Bpost\\Order\\Box\\Option\\' . ucfirst($optionData->getName());
                     if (!method_exists($className, 'createFromXML')) {
                         throw new BpostNotImplementedException();
                     }
@@ -281,49 +284,54 @@ class AtIntlPugo extends International
                     );
                 }
 
-                $self->addOption($option);
+                $atBpost->addOption($option);
             }
         }
-        if (isset($xml->atIntlPugo->parcelWeight) && $xml->atIntlPugo->parcelWeight != '') {
-            $self->setParcelWeight(
-                (int)$xml->atIntlPugo->parcelWeight
+        if (isset($xml->atBpost->weight) && $xml->atBpost->weight != '') {
+            $atBpost->setWeight(
+                (int)$xml->atBpost->weight
             );
         }
-        if (isset($xml->atIntlPugo->receiver) && $xml->atIntlPugo->receiver != '') {
-            $self->setReceiver(
-                Receiver::createFromXML(
-                    $xml->atIntlPugo->receiver->children(Bpost::NS_V3_COMMON)
-                )
+        if (isset($xml->atBpost->receiverName) && $xml->atBpost->receiverName != '') {
+            $atBpost->setReceiverName(
+                (string)$xml->atBpost->receiverName
             );
         }
-        if (isset($xml->atIntlPugo->pugoId) && $xml->atIntlPugo->pugoId != '') {
-            $self->setPugoId(
-                (string)$xml->atIntlPugo->pugoId
+        if (isset($xml->atBpost->receiverCompany) && $xml->atBpost->receiverCompany != '') {
+            $atBpost->setReceiverCompany(
+                (string)$xml->atBpost->receiverCompany
             );
         }
-        if (isset($xml->atIntlPugo->pugoName) && $xml->atIntlPugo->pugoName != '') {
-            $self->setPugoName(
-                (string)$xml->atIntlPugo->pugoName
+        if (isset($xml->atBpost->pugoId) && $xml->atBpost->pugoId != '') {
+            $atBpost->setPugoId(
+                (string)$xml->atBpost->pugoId
             );
         }
-        if (isset($xml->atIntlPugo->pugoAddress)) {
+        if (isset($xml->atBpost->pugoName) && $xml->atBpost->pugoName != '') {
+            $atBpost->setPugoName(
+                (string)$xml->atBpost->pugoName
+            );
+        }
+        if (isset($xml->atBpost->pugoAddress)) {
             /** @var \SimpleXMLElement $pugoAddressData */
-            $pugoAddressData = $xml->atIntlPugo->pugoAddress->children(Bpost::NS_V3_COMMON);
-            $self->setPugoAddress(
+            $pugoAddressData = $xml->atBpost->pugoAddress->children(
+                'http://schema.post.be/shm/deepintegration/v3/common'
+            );
+            $atBpost->setPugoAddress(
                 PugoAddress::createFromXML($pugoAddressData)
             );
         }
-        if (isset($xml->atIntlPugo->requestedDeliveryDate) && $xml->atIntlPugo->requestedDeliveryDate != '') {
-            $self->setRequestedDeliveryDate(
-                (string)$xml->atIntlPugo->requestedDeliveryDate
+        if (isset($xml->atBpost->requestedDeliveryDate) && $xml->atBpost->requestedDeliveryDate != '') {
+            $atBpost->setRequestedDeliveryDate(
+                (string)$xml->atBpost->requestedDeliveryDate
             );
         }
-        if (isset($xml->atIntlPugo->shopHandlingInstruction) && $xml->atIntlPugo->shopHandlingInstruction != '') {
-            $self->setShopHandlingInstruction(
-                (string)$xml->atIntlPugo->shopHandlingInstruction
+        if (isset($xml->atBpost->shopHandlingInstruction) && $xml->atBpost->shopHandlingInstruction != '') {
+            $atBpost->setShopHandlingInstruction(
+                (string)$xml->atBpost->shopHandlingInstruction
             );
         }
 
-        return $self;
+        return $atBpost;
     }
 }
