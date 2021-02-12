@@ -36,12 +36,14 @@ class CustomsInfoTest extends PHPUnit_Framework_TestCase
             'shipmentType' => 'DOCUMENTS',
             'parcelReturnInstructions' => 'RTS',
             'privateAddress' => false,
+            'currency' => 'EUR',
+            'amtPostagePaidByAddresse' => '12.50',
         );
 
         $expectedDocument = self::createDomDocument();
         $customsInfo = $expectedDocument->createElement('customsInfo');
         foreach ($data as $key => $value) {
-            if ($key == 'privateAddress') {
+            if (is_bool($value)) {
                 $value = ($value) ? 'true' : 'false';
             }
             $customsInfo->appendChild(
@@ -57,6 +59,8 @@ class CustomsInfoTest extends PHPUnit_Framework_TestCase
         $customsInfo->setShipmentType($data['shipmentType']);
         $customsInfo->setParcelReturnInstructions($data['parcelReturnInstructions']);
         $customsInfo->setPrivateAddress($data['privateAddress']);
+        $customsInfo->setCurrency($data['currency']);
+        $customsInfo->setAmtPostagePaidByAddresse($data['amtPostagePaidByAddresse']);
         $actualDocument->appendChild(
             $customsInfo->toXML($actualDocument, null)
         );
@@ -68,6 +72,8 @@ class CustomsInfoTest extends PHPUnit_Framework_TestCase
             'shipmentType' => 'DOCUMENTS',
             'parcelReturnInstructions' => 'RTS',
             'privateAddress' => true,
+            'currency' => 'EUR',
+            'amtPostagePaidByAddresse' => '12.50',
         );
 
         $expectedDocument = self::createDomDocument();
@@ -89,6 +95,8 @@ class CustomsInfoTest extends PHPUnit_Framework_TestCase
         $customsInfo->setShipmentType($data['shipmentType']);
         $customsInfo->setParcelReturnInstructions($data['parcelReturnInstructions']);
         $customsInfo->setPrivateAddress($data['privateAddress']);
+        $customsInfo->setCurrency($data['currency']);
+        $customsInfo->setAmtPostagePaidByAddresse($data['amtPostagePaidByAddresse']);
         $actualDocument->appendChild($customsInfo->toXML($actualDocument));
         $this->assertEquals($expectedDocument, $actualDocument);
     }
@@ -104,6 +112,8 @@ class CustomsInfoTest extends PHPUnit_Framework_TestCase
             'shipmentType' => 'DOCUMENTS',
             'parcelReturnInstructions' => 'RTS',
             'privateAddress' => null,
+            'currency' => 'EUR',
+            'amtPostagePaidByAddresse' => 12.50,
         );
 
         $document = self::createDomDocument();
@@ -126,6 +136,8 @@ class CustomsInfoTest extends PHPUnit_Framework_TestCase
         $this->assertSame($data['contentDescription'], $customsInfo->getContentDescription());
         $this->assertSame($data['shipmentType'], $customsInfo->getShipmentType());
         $this->assertSame($data['privateAddress'], $customsInfo->getPrivateAddress());
+        $this->assertSame($data['currency'], $customsInfo->getCurrency());
+        $this->assertSame($data['amtPostagePaidByAddresse'], $customsInfo->getAmtPostagePaidByAddresse());
 
         $data = array(
             'parcelValue' => 700,
@@ -133,6 +145,8 @@ class CustomsInfoTest extends PHPUnit_Framework_TestCase
             'shipmentType' => 'DOCUMENTS',
             'parcelReturnInstructions' => 'RTS',
             'privateAddress' => 'true',
+            'currency' => 'EUR',
+            'amtPostagePaidByAddresse' => 12.50,
         );
 
         $document = self::createDomDocument();
@@ -155,6 +169,8 @@ class CustomsInfoTest extends PHPUnit_Framework_TestCase
         $this->assertSame($data['contentDescription'], $customsInfo->getContentDescription());
         $this->assertSame($data['shipmentType'], $customsInfo->getShipmentType());
         $this->assertSame($data['privateAddress'] == 'true', $customsInfo->getPrivateAddress());
+        $this->assertSame($data['currency'], $customsInfo->getCurrency());
+        $this->assertSame($data['amtPostagePaidByAddresse'], $customsInfo->getAmtPostagePaidByAddresse());
     }
 
     /**

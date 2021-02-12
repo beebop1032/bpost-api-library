@@ -67,6 +67,8 @@ class InternationalTest extends PHPUnit_Framework_TestCase
                     'shipmentType' => 'DOCUMENTS',
                     'parcelReturnInstructions' => 'RTS',
                     'privateAddress' => false,
+                    'currency' => 'EUR',
+                    'amtPostagePaidByAddresse' => '12.50',
                 ),
             ),
         );
@@ -123,7 +125,7 @@ class InternationalTest extends PHPUnit_Framework_TestCase
         );
         $customsInfo = $expectedDocument->createElement('international:customsInfo');
         foreach ($data['international']['customsInfo'] as $key => $value) {
-            if ($key == 'privateAddress') {
+            if (is_bool($value)) {
                 $value = ($value) ? 'true' : 'false';
             }
             $customsInfo->appendChild(
@@ -155,6 +157,8 @@ class InternationalTest extends PHPUnit_Framework_TestCase
         $customsInfo->setShipmentType($data['international']['customsInfo']['shipmentType']);
         $customsInfo->setParcelReturnInstructions($data['international']['customsInfo']['parcelReturnInstructions']);
         $customsInfo->setPrivateAddress($data['international']['customsInfo']['privateAddress']);
+        $customsInfo->setCurrency($data['international']['customsInfo']['currency']);
+        $customsInfo->setAmtPostagePaidByAddresse($data['international']['customsInfo']['amtPostagePaidByAddresse']);
 
         $messaging = new Messaging(
             'infoNextDay',
