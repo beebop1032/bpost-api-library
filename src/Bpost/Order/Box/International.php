@@ -3,6 +3,7 @@
 namespace Bpost\BpostApiClient\Bpost\Order\Box;
 
 use Bpost\BpostApiClient\Bpost\Order\Box\CustomsInfo\CustomsInfo;
+use Bpost\BpostApiClient\Bpost\Order\Box\International\ParcelContent;
 use Bpost\BpostApiClient\Bpost\Order\Box\Option\Messaging;
 use Bpost\BpostApiClient\Bpost\Order\Box\Option\Option;
 use Bpost\BpostApiClient\Bpost\Order\Receiver;
@@ -52,6 +53,14 @@ class International implements IBox
      * @var CustomsInfo
      */
     private $customsInfo;
+
+    /**
+     * Only for shipments outside Europe.
+     * Might include from 1 to 10 “parcelContent”.
+     *
+     * @var array|ParcelContent[]
+     */
+    private $parcelContents = array();
 
     /**
      * @param CustomsInfo $customsInfo
@@ -161,6 +170,43 @@ class International implements IBox
     }
 
     /**
+     * @return array|ParcelContent[]
+     */
+    public function getParcelContents()
+    {
+        return $this->parcelContents;
+    }
+
+    /**
+     * @param array|ParcelContent[] $parcelContents
+     *
+     * @return self
+     *
+     * @throws BpostInvalidValueException
+     */
+    public function setParcelContents(array $parcelContents)
+    {
+        foreach ($parcelContents as $parcelContent) {
+            if (!$parcelContent instanceof ParcelContent) {
+                throw new BpostInvalidValueException(
+                    'parcelContents',
+                    get_class($parcelContent),
+                    array('Bpost\BpostApiClient\Bpost\Order\Box\International\ParcelContent')
+                );
+            }
+
+            $this->addParcelContent($parcelContent);
+        }
+
+        return $this;
+    }
+
+    public function addParcelContent(ParcelContent $parcelContent)
+    {
+        $this->parcelContents[] = $parcelContent;
+    }
+
+    /**
      * Return the object as an array for usage in the XML
      *
      * @param DomDocument $document
@@ -213,6 +259,16 @@ class International implements IBox
             $international->appendChild(
                 $this->getCustomsInfo()->toXML($document, $prefix)
             );
+        }
+
+        if ($this->getParcelContents()) {
+            $parcelContents = $document->createElement(XmlHelper::getPrefixedTagName('parcelContents', $prefix));
+            foreach ($this->getParcelContents() as $parcelContent) {
+                $parcelContents->appendChild(
+                    $parcelContent->toXML($document, $prefix)
+                );
+            }
+            $international->appendChild($parcelContents);
         }
 
         return $internationalBox;
@@ -273,6 +329,14 @@ class International implements IBox
             $international->setCustomsInfo(
                 CustomsInfo::createFromXML($xml->international->customsInfo)
             );
+        }
+        if (isset($xml->international->parcelContents)) {
+            /** @var SimpleXMLElement $optionData */
+            $parcelContents = $xml->international->parcelContents->children('international', true);
+            foreach ($parcelContents as $parcelContentXml) {
+                $parcelContent = ParcelContent::createFromXML($parcelContentXml);
+                $international->addParcelContent($parcelContent);
+            }
         }
 
         return $international;
