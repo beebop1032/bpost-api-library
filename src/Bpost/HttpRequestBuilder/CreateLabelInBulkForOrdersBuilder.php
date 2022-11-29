@@ -74,8 +74,8 @@ class CreateLabelInBulkForOrdersBuilder implements HttpRequestBuilderInterface
     public function getHeaders()
     {
         return array(
-            'Accept: application/vnd.bpost.shm-label-' . ($this->asPdf ? 'pdf' : 'image') . '-v3+XML',
-            'Content-Type: application/vnd.bpost.shm-labelRequest-v3+XML',
+            'Accept: application/vnd.bpost.shm-label-' . ($this->asPdf ? 'pdf' : 'image') . '-v3.4+XML',
+            'Content-Type: application/vnd.bpost.shm-labelRequest-v5+XML',
         );
     }
 

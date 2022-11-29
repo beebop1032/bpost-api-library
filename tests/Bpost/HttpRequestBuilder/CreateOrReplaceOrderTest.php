@@ -49,7 +49,7 @@ class CreateOrReplaceOrderTest extends PHPUnit_Framework_TestCase
                 'input' => array($this->getOrder(), $accountId),
                 'url' => '/orders',
                 'xml' => $this->getOrderXml(),
-                'headers' => array('Content-type: application/vnd.bpost.shm-order-v3.3+XML'),
+                'headers' => array('Content-type: application/vnd.bpost.shm-order-v5+XML'),
                 'method' => 'POST',
                 'isExpectXml' => false,
             ),

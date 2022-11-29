@@ -37,7 +37,7 @@ class FetchOrderTest extends PHPUnit_Framework_TestCase
                 'input' => array('123'),
                 'url' => '/orders/123',
                 'xml' => null,
-                'headers' => array('Accept: application/vnd.bpost.shm-order-v3.3+XML'),
+                'headers' => array('Accept: application/vnd.bpost.shm-order-v3.5+XML'),
                 'method' => 'GET',
                 'isExpectXml' => true,
             ),

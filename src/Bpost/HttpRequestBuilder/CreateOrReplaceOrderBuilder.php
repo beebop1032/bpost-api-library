@@ -51,7 +51,7 @@ class CreateOrReplaceOrderBuilder implements HttpRequestBuilderInterface
     public function getHeaders()
     {
         return array(
-            'Content-type: application/vnd.bpost.shm-order-v3.3+XML',
+            'Content-type: application/vnd.bpost.shm-order-v5+XML',
         );
     }
 

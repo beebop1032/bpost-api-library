@@ -31,7 +31,7 @@ class FetchOrderBuilder implements HttpRequestBuilderInterface
     public function getHeaders()
     {
         return array(
-            'Accept: application/vnd.bpost.shm-order-v3.3+XML',
+            'Accept: application/vnd.bpost.shm-order-v3.5+XML',
         );
     }
 

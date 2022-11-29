@@ -106,16 +106,16 @@ class CreateLabelForOrderTest extends PHPUnit_Framework_TestCase
     private function getHeadersForPdf()
     {
         return array(
-            'Accept: application/vnd.bpost.shm-label-pdf-v3.3+XML',
-            'Content-Type: application/vnd.bpost.shm-labelRequest-v3.3+XML',
+            'Accept: application/vnd.bpost.shm-label-pdf-v3.4+XML',
+            'Content-Type: application/vnd.bpost.shm-labelRequest-v5+XML',
         );
     }
 
     private function getHeadersForImage()
     {
         return array(
-            'Accept: application/vnd.bpost.shm-label-image-v3.3+XML',
-            'Content-Type: application/vnd.bpost.shm-labelRequest-v3.3+XML',
+            'Accept: application/vnd.bpost.shm-label-image-v3.4+XML',
+            'Content-Type: application/vnd.bpost.shm-labelRequest-v5+XML',
         );
     }
 }
