@@ -159,7 +159,7 @@ class AtHome extends National
         if (isset($atHomeXml->receiver)) {
             $self->setReceiver(
                 Receiver::createFromXML(
-                    $atHomeXml->receiver->children('http://schema.post.be/shm/deepintegration/v3/common')
+                    $atHomeXml->receiver->children('http://schema.post.be/shm/deepintegration/v5/common')
                 )
             );
         }

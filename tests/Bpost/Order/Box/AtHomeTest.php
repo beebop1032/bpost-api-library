@@ -38,19 +38,19 @@ class AtHomeTest extends PHPUnit_Framework_TestCase
     {
         $element->setAttribute(
             'xmlns:common',
-            'http://schema.post.be/shm/deepintegration/v3/common'
+            'http://schema.post.be/shm/deepintegration/v5/common'
         );
         $element->setAttribute(
             'xmlns:tns',
-            'http://schema.post.be/shm/deepintegration/v3/'
+            'http://schema.post.be/shm/deepintegration/v5/'
         );
         $element->setAttribute(
             'xmlns',
-            'http://schema.post.be/shm/deepintegration/v3/national'
+            'http://schema.post.be/shm/deepintegration/v5/national'
         );
         $element->setAttribute(
             'xmlns:international',
-            'http://schema.post.be/shm/deepintegration/v3/international'
+            'http://schema.post.be/shm/deepintegration/v5/international'
         );
         $element->setAttribute(
             'xmlns:xsi',
@@ -58,7 +58,7 @@ class AtHomeTest extends PHPUnit_Framework_TestCase
         );
         $element->setAttribute(
             'xsi:schemaLocation',
-            'http://schema.post.be/shm/deepintegration/v3/'
+            'http://schema.post.be/shm/deepintegration/v5/'
         );
 
         $document->appendChild($element);
@@ -139,7 +139,7 @@ class AtHomeTest extends PHPUnit_Framework_TestCase
     {
         return <<<EOF
 <?xml version="1.0" encoding="UTF-8"?>
-<tns:nationalBox xmlns="http://schema.post.be/shm/deepintegration/v3/national" xmlns:common="http://schema.post.be/shm/deepintegration/v3/common" xmlns:tns="http://schema.post.be/shm/deepintegration/v3/" xmlns:international="http://schema.post.be/shm/deepintegration/v3/international" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schema.post.be/shm/deepintegration/v3/">
+<tns:nationalBox xmlns="http://schema.post.be/shm/deepintegration/v5/national" xmlns:common="http://schema.post.be/shm/deepintegration/v5/common" xmlns:tns="http://schema.post.be/shm/deepintegration/v5/" xmlns:international="http://schema.post.be/shm/deepintegration/v5/international" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schema.post.be/shm/deepintegration/v5/">
   <atHome>
     <product>bpack 24h Pro</product>
     <receiver>
@@ -166,7 +166,7 @@ EOF;
     {
         return <<<EOF
 <?xml version="1.0" encoding="UTF-8"?>
-<tns:nationalBox xmlns="http://schema.post.be/shm/deepintegration/v3/national" xmlns:common="http://schema.post.be/shm/deepintegration/v3/common" xmlns:tns="http://schema.post.be/shm/deepintegration/v3/" xmlns:international="http://schema.post.be/shm/deepintegration/v3/international" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schema.post.be/shm/deepintegration/v3/">
+<tns:nationalBox xmlns="http://schema.post.be/shm/deepintegration/v5/national" xmlns:common="http://schema.post.be/shm/deepintegration/v5/common" xmlns:tns="http://schema.post.be/shm/deepintegration/v5/" xmlns:international="http://schema.post.be/shm/deepintegration/v5/international" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schema.post.be/shm/deepintegration/v5/">
   <notAtHome>
     <product>bpack 24h Pro</product>
   </notAtHome>

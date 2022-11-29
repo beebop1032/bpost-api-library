@@ -125,7 +125,7 @@ class BpostOnAppointment extends National
         if (isset($bpostOnAppointmentXml->receiver)) {
             $self->setReceiver(
                 Receiver::createFromXML(
-                    $bpostOnAppointmentXml->receiver->children('http://schema.post.be/shm/deepintegration/v3/common')
+                    $bpostOnAppointmentXml->receiver->children('http://schema.post.be/shm/deepintegration/v5/common')
                 )
             );
         }

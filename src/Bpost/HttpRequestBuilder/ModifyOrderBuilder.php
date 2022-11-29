@@ -40,7 +40,7 @@ class ModifyOrderBuilder implements HttpRequestBuilderInterface
         $document->formatOutput = true;
 
         $orderUpdate = $document->createElement('orderUpdate');
-        $orderUpdate->setAttribute('xmlns', 'http://schema.post.be/shm/deepintegration/v3/');
+        $orderUpdate->setAttribute('xmlns', 'http://schema.post.be/shm/deepintegration/v5/');
         $orderUpdate->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
         $orderUpdate->appendChild(
             $document->createElement('status', $this->status)

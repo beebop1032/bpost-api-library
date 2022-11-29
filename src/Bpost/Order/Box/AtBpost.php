@@ -281,7 +281,7 @@ class AtBpost extends National
         if (isset($xml->atBpost->options)) {
             /** @var SimpleXMLElement $optionData */
             foreach ($xml->atBpost->options as $optionData) {
-                $optionData = $optionData->children('http://schema.post.be/shm/deepintegration/v3/common');
+                $optionData = $optionData->children('http://schema.post.be/shm/deepintegration/v5/common');
 
                 if (in_array(
                     $optionData->getName(),
@@ -329,7 +329,7 @@ class AtBpost extends National
         if (isset($xml->atBpost->pugoAddress)) {
             /** @var SimpleXMLElement $pugoAddressData */
             $pugoAddressData = $xml->atBpost->pugoAddress->children(
-                'http://schema.post.be/shm/deepintegration/v3/common'
+                'http://schema.post.be/shm/deepintegration/v5/common'
             );
             $atBpost->setPugoAddress(
                 PugoAddress::createFromXML($pugoAddressData)

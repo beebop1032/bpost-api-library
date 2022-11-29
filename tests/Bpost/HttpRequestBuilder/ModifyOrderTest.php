@@ -44,7 +44,7 @@ class ModifyOrderTest extends PHPUnit_Framework_TestCase
                 'input' => array('123', 'pending'),
                 'url' => '/orders/123',
                 'xml' => '<?xml version="1.0" encoding="utf-8"?>
-<orderUpdate xmlns="http://schema.post.be/shm/deepintegration/v3/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<orderUpdate xmlns="http://schema.post.be/shm/deepintegration/v5/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <status>PENDING</status>
 </orderUpdate>
 ',

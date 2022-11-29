@@ -232,14 +232,14 @@ class Box
             $box->setSender(
                 Sender::createFromXML(
                     $xml->sender->children(
-                        'http://schema.post.be/shm/deepintegration/v3/common'
+                        'http://schema.post.be/shm/deepintegration/v5/common'
                     )
                 )
             );
         }
         if (isset($xml->nationalBox)) {
             /** @var SimpleXMLElement $nationalBoxData */
-            $nationalBoxData = $xml->nationalBox->children('http://schema.post.be/shm/deepintegration/v3/national');
+            $nationalBoxData = $xml->nationalBox->children('http://schema.post.be/shm/deepintegration/v5/national');
 
             // build classname based on the tag name
             $className = '\\Bpost\\BpostApiClient\\Bpost\\Order\\Box\\' . ucfirst($nationalBoxData->getName());
@@ -255,7 +255,7 @@ class Box
         }
         if (isset($xml->internationalBox)) {
             /** @var SimpleXMLElement $internationalBoxData */
-            $internationalBoxData = $xml->internationalBox->children('http://schema.post.be/shm/deepintegration/v3/international');
+            $internationalBoxData = $xml->internationalBox->children('http://schema.post.be/shm/deepintegration/v5/international');
 
             // build classname based on the tag name
             $className = '\\Bpost\\BpostApiClient\\Bpost\\Order\\Box\\' . ucfirst($internationalBoxData->getName());

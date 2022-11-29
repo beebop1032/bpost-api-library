@@ -193,7 +193,7 @@ class CreateLabelInBulkForOrdersTest extends PHPUnit_Framework_TestCase
     {
         return <<< XML
 <?xml version="1.0" encoding="UTF-8"?>
-<batchLabels xmlns="http://schema.post.be/shm/deepintegration/v3/">
+<batchLabels xmlns="http://schema.post.be/shm/deepintegration/v5/">
   <order>order_ref_1</order>
   <order>order_ref_2</order>
 </batchLabels>

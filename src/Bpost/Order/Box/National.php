@@ -234,7 +234,7 @@ abstract class National extends ComplexAttribute implements IBox
         if (isset($nationalXml->options) && !empty($nationalXml->options)) {
             /** @var SimpleXMLElement $optionData */
             foreach ($nationalXml->options as $optionData) {
-                $optionData = $optionData->children('http://schema.post.be/shm/deepintegration/v3/common');
+                $optionData = $optionData->children('http://schema.post.be/shm/deepintegration/v5/common');
 
                 if (in_array($optionData->getName(), array(
                         Messaging::MESSAGING_TYPE_INFO_DISTRIBUTED,

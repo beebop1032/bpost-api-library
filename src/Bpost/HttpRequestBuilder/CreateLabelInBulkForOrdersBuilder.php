@@ -57,7 +57,7 @@ class CreateLabelInBulkForOrdersBuilder implements HttpRequestBuilderInterface
         $document->formatOutput = true;
 
         $batchLabels = $document->createElement('batchLabels');
-        $batchLabels->setAttribute('xmlns', 'http://schema.post.be/shm/deepintegration/v3/');
+        $batchLabels->setAttribute('xmlns', 'http://schema.post.be/shm/deepintegration/v5/');
         foreach ($this->references as $reference) {
             $batchLabels->appendChild(
                 $document->createElement('order', $reference)
