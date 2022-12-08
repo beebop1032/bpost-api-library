@@ -2,7 +2,7 @@
 
 namespace Tests\Bpost\Order\Box\Option;
 
-use Bpost\BpostApiClient\Bpost\Order\Box\Option\Signature;
+use Bpost\BpostApiClient\Bpost\Order\Box\Option\Signed;
 use DOMDocument;
 use PHPUnit_Framework_TestCase;
 
@@ -33,7 +33,7 @@ class SignatureTest extends PHPUnit_Framework_TestCase
         );
 
         $actualDocument = self::createDomDocument();
-        $signature = new Signature();
+        $signature = new Signed();
         $actualDocument->appendChild(
             $signature->toXML($actualDocument)
         );
@@ -46,7 +46,7 @@ class SignatureTest extends PHPUnit_Framework_TestCase
         );
 
         $actualDocument = self::createDomDocument();
-        $signature = new Signature();
+        $signature = new Signed();
         $actualDocument->appendChild(
             $signature->toXML($actualDocument, 'foo')
         );
