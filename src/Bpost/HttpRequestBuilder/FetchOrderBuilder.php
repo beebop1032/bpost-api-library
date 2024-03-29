@@ -2,7 +2,7 @@
 
 namespace Bpost\BpostApiClient\Bpost\HttpRequestBuilder;
 
-class FetchOrder implements HttpRequestBuilderInterface
+class FetchOrderBuilder implements HttpRequestBuilderInterface
 {
     /**
      * @var string

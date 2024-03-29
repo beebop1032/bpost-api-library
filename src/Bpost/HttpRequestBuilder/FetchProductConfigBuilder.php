@@ -2,7 +2,7 @@
 
 namespace Bpost\BpostApiClient\Bpost\HttpRequestBuilder;
 
-class FetchProductConfig implements HttpRequestBuilderInterface
+class FetchProductConfigBuilder implements HttpRequestBuilderInterface
 {
     /**
      * @return string|null
