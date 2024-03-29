@@ -1,5 +1,16 @@
 # Changelog
 
+### 3.5.0
+
+* Externalize creation of HTTP requests in new classes (HttpRequestBuilder\*)
+* Minimize duplication of code
+* Move tests in a specific (PHP) namespace and apply PHP-CS rules
+* Rename class Insurance->Insured to avoid exception during xml parsing
+* Update HTTP headers and XML namespace for api v5 #32
+* Add CustomsInfo#currency and CustomsInfo#amtPostagePaidByAddresse
+* Rename class Signature->Signed to avoid exception during xml parsing
+* Add parcelContents for International
+
 ### 3.4.11
 
 * Fix previously broken unit tests
