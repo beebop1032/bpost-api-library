@@ -1,5 +1,12 @@
 # Changelog
 
+### 3.5.1
+
+* fix: API returns xml-namespaces v3 instead of v5
+* fix: Some options were not prefixed (xml-namespace)
+* feat: bpost API URL is now : https://shm-rest.bpost.cloud/services/shm
+* tests: update E2E tests (tests which called the bpost API)
+
 ### 3.5.0
 
 * Externalize creation of HTTP requests in new classes (HttpRequestBuilder\*)
