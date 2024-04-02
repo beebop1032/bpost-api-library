@@ -27,7 +27,7 @@ class AutomaticSecondPresentation extends Option
      *
      * @return DomElement
      */
-    public function toXML(DOMDocument $document, $prefix = null)
+    public function toXML(DOMDocument $document, $prefix = 'common')
     {
         return $document->createElement(XmlHelper::getPrefixedTagName('automaticSecondPresentation', $prefix));
     }
