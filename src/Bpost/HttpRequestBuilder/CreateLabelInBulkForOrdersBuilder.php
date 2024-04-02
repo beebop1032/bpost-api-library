@@ -57,7 +57,7 @@ class CreateLabelInBulkForOrdersBuilder implements HttpRequestBuilderInterface
         $document->formatOutput = true;
 
         $batchLabels = $document->createElement('batchLabels');
-        $batchLabels->setAttribute('xmlns', 'http://schema.post.be/shm/deepintegration/v5/');
+        $batchLabels->setAttribute('xmlns', 'http://schema.post.be/shm/deepintegration/v3/');
         foreach ($this->references as $reference) {
             $batchLabels->appendChild(
                 $document->createElement('order', $reference)
@@ -75,7 +75,7 @@ class CreateLabelInBulkForOrdersBuilder implements HttpRequestBuilderInterface
     {
         return array(
             'Accept: application/vnd.bpost.shm-label-' . ($this->asPdf ? 'pdf' : 'image') . '-v3.4+XML',
-            'Content-Type: application/vnd.bpost.shm-labelRequest-v5+XML',
+            'Content-Type: application/vnd.bpost.shm-labelRequest-v3+XML',
         );
     }
 
