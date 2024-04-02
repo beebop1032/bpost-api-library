@@ -294,7 +294,7 @@ class International implements IBox
         }
         if (isset($xml->international->options)) {
             /** @var SimpleXMLElement $optionData */
-            $options = $xml->international->options->children('http://schema.post.be/shm/deepintegration/v5/common');
+            $options = $xml->international->options->children('http://schema.post.be/shm/deepintegration/v3/common');
             foreach ($options as $optionData) {
                 switch ($optionData->getName()) {
                     case Messaging::MESSAGING_TYPE_INFO_DISTRIBUTED:
@@ -319,7 +319,7 @@ class International implements IBox
         }
         if (isset($xml->international->receiver)) {
             $receiverData = $xml->international->receiver->children(
-                'http://schema.post.be/shm/deepintegration/v5/common'
+                'http://schema.post.be/shm/deepintegration/v3/common'
             );
             $international->setReceiver(
                 Receiver::createFromXML($receiverData)
