@@ -6,11 +6,11 @@ use Bpost\BpostApiClient\Bpost;
 use Bpost\BpostApiClient\Bpost\Order;
 use Bpost\BpostApiClient\Bpost\Order\Address;
 use Bpost\BpostApiClient\Bpost\Order\Box;
-use Bpost\BpostApiClient\Bpost\Order\Box\AtHome;
 use Bpost\BpostApiClient\Bpost\Order\Box\Option\Messaging;
 use Bpost\BpostApiClient\Bpost\Order\Line as OrderLine;
 use Bpost\BpostApiClient\Bpost\Order\Receiver;
 use Bpost\BpostApiClient\Bpost\Order\Sender;
+use Bpost\BpostApiClient\Common\ValidatedValue\LabelFormat;
 use PHPUnit_Framework_TestCase;
 
 /**
@@ -22,6 +22,10 @@ class BpostTest extends PHPUnit_Framework_TestCase
      * @var Bpost
      */
     private $bpost;
+    /**
+     * @var string
+     */
+    private $notificationEmail = NOTIFICATION_EMAIL;
 
     /**
      * Prepares the environment before running a test.
@@ -64,11 +68,10 @@ class BpostTest extends PHPUnit_Framework_TestCase
      *
      * @return Order
      */
-    protected function createAtHomeOrderObject()
+    protected function createAtHomeOrderObject($refSuffix)
     {
         // create order
-        $orderId = time();
-        $order = new Order($orderId);
+        $order = new Order('phpunit-' . date('ymdHis-' . $refSuffix));
         $order->setCostCenter('Cost Center');
 
         // add lines
@@ -90,7 +93,7 @@ class BpostTest extends PHPUnit_Framework_TestCase
         $sender->setName('Tijs Verkoyen');
         $sender->setCompany('Sumo Coders');
         $sender->setPhoneNumber('+32 9 395 02 51');
-        $sender->setEmailAddress('bpost.sender@verkoyen.eu');
+        $sender->setEmailAddress($this->notificationEmail);
 
         $box = new Box();
         $box->setSender($sender);
@@ -109,17 +112,19 @@ class BpostTest extends PHPUnit_Framework_TestCase
         $receiver->setName('Tijs Verkoyen');
         $receiver->setCompany('Sumo Coders');
         $receiver->setPhoneNumber('+32 9 395 02 51');
-        $receiver->setEmailAddress('bpost.receiver@verkoyen.eu');
-
-        // options
-        $option = new Messaging('infoDistributed', 'NL', 'bpost@verkoyen.eu');
+        $receiver->setEmailAddress($this->notificationEmail);
 
         // @Home
-        $atHome = new AtHome();
-        $atHome->setProduct('bpack 24h Pro');
+        $atHome = new Box\AtHome();
+        $atHome->setProduct(Bpost\ProductConfiguration\Product::PRODUCT_NAME_BPACK_24H_PRO);
         $atHome->setWeight(2000);
         $atHome->setReceiver($receiver);
-        $atHome->addOption($option);
+        $atHome->addOption(new Messaging(Messaging::MESSAGING_TYPE_INFO_DISTRIBUTED, 'NL', $this->notificationEmail));
+        $atHome->addOption(new Box\Option\CashOnDelivery(500, 'BE97068910521849', 'GKCCBEBB'));
+        $atHome->addOption(new Messaging(Messaging::MESSAGING_TYPE_INFO_REMINDER, 'NL', $this->notificationEmail));
+        $atHome->addOption(new Box\Option\Insured(Box\Option\Insured::INSURANCE_TYPE_BASIC_INSURANCE));
+        $atHome->addOption(new Box\Option\AutomaticSecondPresentation());
+        $atHome->addOption(new Box\Option\Signed());
         $box->setNationalBox($atHome);
 
         $order->addBox($box);
@@ -132,11 +137,11 @@ class BpostTest extends PHPUnit_Framework_TestCase
      */
     public function testCreateOrReplaceOrder()
     {
-        $order = $this->createAtHomeOrderObject();
+        $order = $this->createAtHomeOrderObject(__LINE__);
         $response = $this->bpost->createOrReplaceOrder($order);
         $this->assertTrue($response);
 
-        $this->bpost->modifyOrderStatus($order->getReference(), 'CANCELLED');
+        $this->bpost->modifyOrderStatus($order->getReference(), Box::BOX_STATUS_CANCELLED);
     }
 
     /**
@@ -144,12 +149,12 @@ class BpostTest extends PHPUnit_Framework_TestCase
      */
     public function testModifyOrderStatus()
     {
-        $order = $this->createAtHomeOrderObject();
+        $order = $this->createAtHomeOrderObject(__LINE__);
         $this->bpost->createOrReplaceOrder($order);
-        $response = $this->bpost->modifyOrderStatus($order->getReference(), 'OPEN');
+        $response = $this->bpost->modifyOrderStatus($order->getReference(), Box::BOX_STATUS_OPEN);
         $this->assertTrue($response);
 
-        $this->bpost->modifyOrderStatus($order->getReference(), 'CANCELLED');
+        $this->bpost->modifyOrderStatus($order->getReference(), Box::BOX_STATUS_CANCELLED);
     }
 
     /**
@@ -157,13 +162,13 @@ class BpostTest extends PHPUnit_Framework_TestCase
      */
     public function testFetchOrder()
     {
-        $order = $this->createAtHomeOrderObject();
+        $order = $this->createAtHomeOrderObject(__LINE__);
         $this->bpost->createOrReplaceOrder($order);
         $response = $this->bpost->fetchOrder($order->getReference());
         $this->assertInstanceOf('\\Bpost\BpostApiClient\\Bpost\\Order', $response);
         $this->assertEquals($order->getReference(), $response->getReference());
 
-        $this->bpost->modifyOrderStatus($order->getReference(), 'CANCELLED');
+        $this->bpost->modifyOrderStatus($order->getReference(), Box::BOX_STATUS_CANCELLED);
     }
 
     /**
@@ -171,7 +176,7 @@ class BpostTest extends PHPUnit_Framework_TestCase
      */
     public function testCreateLabelForOrder()
     {
-        $order = $this->createAtHomeOrderObject();
+        $order = $this->createAtHomeOrderObject(__LINE__);
         $this->bpost->createOrReplaceOrder($order);
         $response = $this->bpost->createLabelForOrder($order->getReference());
         $this->assertInternalType('array', $response);
@@ -179,7 +184,7 @@ class BpostTest extends PHPUnit_Framework_TestCase
             $this->assertInstanceOf('\\Bpost\\BpostApiClient\BPost\Label', $label);
         }
 
-        $this->bpost->modifyOrderStatus($order->getReference(), 'CANCELLED');
+        $this->bpost->modifyOrderStatus($order->getReference(), Box::BOX_STATUS_CANCELLED);
     }
 
     /**
@@ -189,7 +194,7 @@ class BpostTest extends PHPUnit_Framework_TestCase
      */
     public function testCreateLabelForBox()
     {
-        $order = $this->createAtHomeOrderObject();
+        $order = $this->createAtHomeOrderObject(__LINE__);
         $this->bpost->createOrReplaceOrder($order);
         $response = $this->bpost->createLabelForOrder($order->getReference());
         $response = $this->bpost->createLabelForBox($response[0]->getBarcode());
@@ -198,7 +203,7 @@ class BpostTest extends PHPUnit_Framework_TestCase
             $this->assertInstanceOf('\\Bpost\\BpostApiClient\BPost\Label', $label);
         }
 
-        $this->bpost->modifyOrderStatus($order->getReference(), 'CANCELLED');
+        $this->bpost->modifyOrderStatus($order->getReference(), Box::BOX_STATUS_CANCELLED);
     }
 
     /**
@@ -208,10 +213,10 @@ class BpostTest extends PHPUnit_Framework_TestCase
      */
     public function testCreateLabelInBulkForOrders()
     {
-        $order1 = $this->createAtHomeOrderObject();
+        $order1 = $this->createAtHomeOrderObject(__LINE__ . '_1');
         $this->bpost->createOrReplaceOrder($order1);
 
-        $order2 = $this->createAtHomeOrderObject();
+        $order2 = $this->createAtHomeOrderObject(__LINE__ . '_2');
         $this->bpost->createOrReplaceOrder($order2);
 
         $this->bpost->setTimeOut(60);
@@ -227,7 +232,7 @@ class BpostTest extends PHPUnit_Framework_TestCase
             $this->assertInstanceOf('\\Bpost\\BpostApiClient\BPost\Label', $label);
         }
 
-        $this->bpost->modifyOrderStatus($order1->getReference(), 'CANCELLED');
-        $this->bpost->modifyOrderStatus($order2->getReference(), 'CANCELLED');
+        $this->bpost->modifyOrderStatus($order1->getReference(), Box::BOX_STATUS_CANCELLED);
+        $this->bpost->modifyOrderStatus($order2->getReference(), Box::BOX_STATUS_CANCELLED);
     }
 }

@@ -83,7 +83,7 @@ class Geo6Test extends PHPUnit_Framework_TestCase
             $this->geo6->getServicePointDetails('-1');
             $this->fail('BpostTaxipostLocatorException not launched');
         } catch (BpostTaxipostLocatorException $e) {
-            $this->assertSame('No match for id : -1 and type : 3', $e->getMessage());
+            $this->assertSame('No match for id :-1 and  type :3', $e->getMessage());
         } catch (Exception $e) {
             $this->fail('BpostTaxipostLocatorException not caught');
         }
@@ -92,7 +92,7 @@ class Geo6Test extends PHPUnit_Framework_TestCase
             $this->geo6->getServicePointDetails('0');
             $this->fail('BpostTaxipostLocatorException not launched');
         } catch (BpostTaxipostLocatorException $e) {
-            $this->assertSame('Id is mandatory', $e->getMessage());
+            $this->assertSame('No match for id :0 and  type :3', $e->getMessage());
         } catch (Exception $e) {
             $this->fail('BpostTaxipostLocatorException not caught');
         }
