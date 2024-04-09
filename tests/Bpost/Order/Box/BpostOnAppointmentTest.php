@@ -92,14 +92,14 @@ class BpostOnAppointmentTest extends PHPUnit_Framework_TestCase
         $rootDom = $this->createDomDocument();
         $document = $this->generateDomDocument($rootDom, $self->toXml($rootDom));
 
-        $this->assertEquals($this->getNormalXml(), $document->saveXML());
+        $this->assertSame($this->getNormalXmlv5(), $document->saveXML());
 
         return;
     }
 
     public function testCreateFromXml()
     {
-        $self = BpostOnAppointment::createFromXml(new SimpleXMLElement($this->getNormalXml()));
+        $self = BpostOnAppointment::createFromXml(new SimpleXMLElement($this->getNormalXmlv3()));
 
         $this->assertSame('2016-03-16', $self->getInNetworkCutOff());
 
@@ -115,7 +115,34 @@ class BpostOnAppointmentTest extends PHPUnit_Framework_TestCase
         BpostOnAppointment::createFromXml(new SimpleXMLElement($this->getNotBpostOnAppointmentXml()));
     }
 
-    private function getNormalXml()
+    private function getNormalXmlv3()
+    {
+        return <<<EOF
+<?xml version="1.0" encoding="utf-8"?>
+<nationalBox xmlns="http://schema.post.be/shm/deepintegration/v3/national" xmlns:common="http://schema.post.be/shm/deepintegration/v3/common" xmlns:tns="http://schema.post.be/shm/deepintegration/v3/" xmlns:international="http://schema.post.be/shm/deepintegration/v3/international" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schema.post.be/shm/deepintegration/v3/">
+  <bpostOnAppointment>
+    <product>bpack 24h Pro</product>
+    <receiver>
+      <common:name>La Pomme</common:name>
+      <common:company>Antidot</common:company>
+      <common:address>
+        <common:streetName>Rue du Grand Duc</common:streetName>
+        <common:number>13</common:number>
+        <common:postalCode>1040</common:postalCode>
+        <common:locality>Brussels</common:locality>
+        <common:countryCode>BE</common:countryCode>
+      </common:address>
+      <common:emailAddress>pomme@antidot.com</common:emailAddress>
+      <common:phoneNumber>026411390</common:phoneNumber>
+    </receiver>
+    <inNetworkCutOff>2016-03-16</inNetworkCutOff>
+  </bpostOnAppointment>
+</nationalBox>
+
+EOF;
+    }
+
+    private function getNormalXmlv5()
     {
         return <<<EOF
 <?xml version="1.0" encoding="utf-8"?>

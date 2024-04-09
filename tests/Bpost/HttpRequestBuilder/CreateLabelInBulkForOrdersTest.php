@@ -177,7 +177,7 @@ class CreateLabelInBulkForOrdersTest extends PHPUnit_Framework_TestCase
     {
         return array(
             'Accept: application/vnd.bpost.shm-label-pdf-v3.4+XML',
-            'Content-Type: application/vnd.bpost.shm-labelRequest-v5+XML',
+            'Content-Type: application/vnd.bpost.shm-labelRequest-v3+XML',
         );
     }
 
@@ -185,7 +185,7 @@ class CreateLabelInBulkForOrdersTest extends PHPUnit_Framework_TestCase
     {
         return array(
             'Accept: application/vnd.bpost.shm-label-image-v3.4+XML',
-            'Content-Type: application/vnd.bpost.shm-labelRequest-v5+XML',
+            'Content-Type: application/vnd.bpost.shm-labelRequest-v3+XML',
         );
     }
 
@@ -193,7 +193,7 @@ class CreateLabelInBulkForOrdersTest extends PHPUnit_Framework_TestCase
     {
         return <<< XML
 <?xml version="1.0" encoding="UTF-8"?>
-<batchLabels xmlns="http://schema.post.be/shm/deepintegration/v5/">
+<batchLabels xmlns="http://schema.post.be/shm/deepintegration/v3/">
   <order>order_ref_1</order>
   <order>order_ref_2</order>
 </batchLabels>

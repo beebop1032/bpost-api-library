@@ -94,12 +94,12 @@ class AtHomeTest extends PHPUnit_Framework_TestCase
         $rootDom = $this->createDomDocument();
         $document = $this->generateDomDocument($rootDom, $self->toXML($rootDom, 'tns'));
 
-        $this->assertSame($this->getXml(), $document->saveXML());
+        $this->assertSame($this->getXmlv5(), $document->saveXML());
     }
 
     public function testCreateFromNormalXml()
     {
-        $self = AtHome::createFromXML(new SimpleXMLElement($this->getXml()));
+        $self = AtHome::createFromXML(new SimpleXMLElement($this->getXmlv3()));
 
         $this->assertSame('2016-03-16', $self->getRequestedDeliveryDate());
 
@@ -135,11 +135,38 @@ class AtHomeTest extends PHPUnit_Framework_TestCase
         $this->assertTrue(true);
     }
 
-    private function getXml()
+    private function getXmlv5()
     {
         return <<<EOF
 <?xml version="1.0" encoding="UTF-8"?>
 <tns:nationalBox xmlns="http://schema.post.be/shm/deepintegration/v5/national" xmlns:common="http://schema.post.be/shm/deepintegration/v5/common" xmlns:tns="http://schema.post.be/shm/deepintegration/v5/" xmlns:international="http://schema.post.be/shm/deepintegration/v5/international" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schema.post.be/shm/deepintegration/v5/">
+  <atHome>
+    <product>bpack 24h Pro</product>
+    <receiver>
+      <common:name>La Pomme</common:name>
+      <common:company>Antidot</common:company>
+      <common:address>
+        <common:streetName>Rue du Grand Duc</common:streetName>
+        <common:number>13</common:number>
+        <common:postalCode>1040</common:postalCode>
+        <common:locality>Brussels</common:locality>
+        <common:countryCode>BE</common:countryCode>
+      </common:address>
+      <common:emailAddress>dev.null@antidot.com</common:emailAddress>
+      <common:phoneNumber>0032475123456</common:phoneNumber>
+    </receiver>
+    <requestedDeliveryDate>2016-03-16</requestedDeliveryDate>
+  </atHome>
+</tns:nationalBox>
+
+EOF;
+    }
+
+    private function getXmlv3()
+    {
+        return <<<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<tns:nationalBox xmlns="http://schema.post.be/shm/deepintegration/v3/national" xmlns:common="http://schema.post.be/shm/deepintegration/v3/common" xmlns:tns="http://schema.post.be/shm/deepintegration/v3/" xmlns:international="http://schema.post.be/shm/deepintegration/v3/international" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://schema.post.be/shm/deepintegration/v3/">
   <atHome>
     <product>bpack 24h Pro</product>
     <receiver>

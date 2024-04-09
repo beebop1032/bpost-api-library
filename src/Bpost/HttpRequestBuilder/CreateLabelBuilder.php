@@ -57,7 +57,7 @@ abstract class CreateLabelBuilder implements HttpRequestBuilderInterface
     {
         return array(
             'Accept: application/vnd.bpost.shm-label-' . ($this->asPdf ? 'pdf' : 'image') . '-v3.4+XML',
-            'Content-Type: application/vnd.bpost.shm-labelRequest-v5+XML',
+            'Content-Type: application/vnd.bpost.shm-labelRequest-v3+XML',
         );
     }
 

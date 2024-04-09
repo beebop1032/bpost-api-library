@@ -107,7 +107,7 @@ class CreateLabelForBoxTest extends PHPUnit_Framework_TestCase
     {
         return array(
             'Accept: application/vnd.bpost.shm-label-pdf-v3.4+XML',
-            'Content-Type: application/vnd.bpost.shm-labelRequest-v5+XML',
+            'Content-Type: application/vnd.bpost.shm-labelRequest-v3+XML',
         );
     }
 
@@ -115,7 +115,7 @@ class CreateLabelForBoxTest extends PHPUnit_Framework_TestCase
     {
         return array(
             'Accept: application/vnd.bpost.shm-label-image-v3.4+XML',
-            'Content-Type: application/vnd.bpost.shm-labelRequest-v5+XML',
+            'Content-Type: application/vnd.bpost.shm-labelRequest-v3+XML',
         );
     }
 }

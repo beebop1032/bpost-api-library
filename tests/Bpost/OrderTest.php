@@ -142,7 +142,7 @@ class OrderTest extends PHPUnit_Framework_TestCase
     {
         return <<<XML
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<orderInfo xmlns="http://schema.post.be/shm/deepintegration/v5/" xmlns:ns2="http://schema.post.be/shm/deepintegration/v5/common" xmlns:ns3="http://schema.post.be/shm/deepintegration/v5/national" xmlns:ns4="http://schema.post.be/shm/deepintegration/v5/international">
+<orderInfo xmlns="http://schema.post.be/shm/deepintegration/v3/" xmlns:ns2="http://schema.post.be/shm/deepintegration/v5/common" xmlns:ns3="http://schema.post.be/shm/deepintegration/v5/national" xmlns:ns4="http://schema.post.be/shm/deepintegration/v5/international">
   <accountId>107423</accountId>
   <costCenter>Cost Center</costCenter>
 </orderInfo>
@@ -154,7 +154,7 @@ XML;
     {
         return <<<XML
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<orderInfo xmlns="http://schema.post.be/shm/deepintegration/v5/" xmlns:ns2="http://schema.post.be/shm/deepintegration/v5/common" xmlns:ns3="http://schema.post.be/shm/deepintegration/v5/national" xmlns:ns4="http://schema.post.be/shm/deepintegration/v5/international">
+<orderInfo xmlns="http://schema.post.be/shm/deepintegration/v3/" xmlns:ns2="http://schema.post.be/shm/deepintegration/v3/common" xmlns:ns3="http://schema.post.be/shm/deepintegration/v3/national" xmlns:ns4="http://schema.post.be/shm/deepintegration/v3/international">
   <accountId>107423</accountId>
   <reference>bpost_ref_56e02a5047119</reference>
   <costCenter>Cost Center</costCenter>

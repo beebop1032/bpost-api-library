@@ -10,7 +10,6 @@ use Bpost\BpostApiClient\Bpost\Order\Box\Option\Messaging;
 use Bpost\BpostApiClient\Bpost\Order\Line as OrderLine;
 use Bpost\BpostApiClient\Bpost\Order\Receiver;
 use Bpost\BpostApiClient\Bpost\Order\Sender;
-use Bpost\BpostApiClient\Common\ValidatedValue\LabelFormat;
 use PHPUnit_Framework_TestCase;
 
 /**
@@ -71,7 +70,7 @@ class BpostTest extends PHPUnit_Framework_TestCase
     protected function createAtHomeOrderObject($refSuffix)
     {
         // create order
-        $order = new Order('phpunit-' . date('ymdHis-' . $refSuffix));
+        $order = new Order('phpunit-' . date('ymdHis-') . $refSuffix);
         $order->setCostCenter('Cost Center');
 
         // add lines
