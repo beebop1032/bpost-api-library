@@ -150,6 +150,7 @@ class International implements IBox
             Product::PRODUCT_NAME_BPACK_WORLD_EASY_RETURN,
             Product::PRODUCT_NAME_BPACK_WORLD_EXPRESS_PRO,
             Product::PRODUCT_NAME_BPACK_EUROPE_BUSINESS,
+            Product::PRODUCT_NAME_BPACK_AT_BPOST_INTERNATIONAL,
         );
     }
 
@@ -298,6 +299,9 @@ class International implements IBox
             foreach ($options as $optionData) {
                 switch ($optionData->getName()) {
                     case Messaging::MESSAGING_TYPE_INFO_DISTRIBUTED:
+                    case Messaging::MESSAGING_TYPE_KEEP_ME_INFORMED:
+                    case Messaging::MESSAGING_TYPE_INFO_REMINDER:
+                    case Messaging::MESSAGING_TYPE_INFO_NEXT_DAY:
                         $option = Messaging::createFromXML($optionData);
                         break;
                     default:
