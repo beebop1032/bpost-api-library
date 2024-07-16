@@ -40,6 +40,7 @@ class AtIntlPugoTest extends PHPUnit_Framework_TestCase
                 <ns4:options>
                     <ns2:keepMeInformed language="FR">
                         <ns2:emailAddress>esolutions@bpost.be</ns2:emailAddress>
+                        <ns2:mobilePhone>0470000000</ns2:mobilePhone>
                     </ns2:keepMeInformed>
                 </ns4:options>
                 <ns4:receiver>
@@ -104,7 +105,6 @@ XML;
         $this->assertSame(11000, $internationalBox->getParcelWeight());
         $this->assertCount(0, $internationalBox->getParcelContents());
         $this->assertNotNull($internationalBox->getReceiver());
-        $this->assertCount(1, $internationalBox->getOptions());
 
         $receiver = $internationalBox->getReceiver();
 
@@ -119,12 +119,11 @@ XML;
         $this->assertSame('FR', $receiver->getAddress()->getCountryCode());
 
         $this->assertCount(1, $internationalBox->getOptions());
-
         $optionMessaging = current($internationalBox->getOptions());
         $this->assertInstanceOf('Bpost\BpostApiClient\Bpost\Order\Box\Option\Messaging', $optionMessaging);
         $this->assertSame(Box\Option\Messaging::MESSAGING_TYPE_KEEP_ME_INFORMED, $optionMessaging->getType());
         $this->assertSame(Box\Option\Messaging::MESSAGING_LANGUAGE_FR, $optionMessaging->getLanguage());
-        $this->assertNull($optionMessaging->getMobilePhone());
+        $this->assertSame('0470000000', $optionMessaging->getMobilePhone());
         $this->assertSame('esolutions@bpost.be', $optionMessaging->getEmailAddress());
     }
 }

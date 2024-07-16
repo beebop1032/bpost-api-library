@@ -236,11 +236,12 @@ class Messaging extends Option
     {
         $messaging = new Messaging($xml->getName(), (string) $xml->attributes()->language);
 
-        if ((string) $xml->emailAddress !== '') {
-            $messaging->setEmailAddress((string) $xml->emailAddress);
+        $children = $xml->children('http://schema.post.be/shm/deepintegration/v3/common');
+        if ((string) $children->emailAddress !== '') {
+            $messaging->setEmailAddress((string) $children->emailAddress);
         }
-        if ((string) $xml->mobilePhone !== '') {
-            $messaging->setMobilePhone((string) $xml->mobilePhone);
+        if ((string) $children->mobilePhone !== '') {
+            $messaging->setMobilePhone((string) $children->mobilePhone);
         }
 
         return $messaging;
