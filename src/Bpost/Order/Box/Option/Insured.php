@@ -26,13 +26,21 @@ class Insured extends Option
 
     const INSURANCE_AMOUNT_UP_TO_2500_EUROS = 2;
     const INSURANCE_AMOUNT_UP_TO_5000_EUROS = 3;
+    /** @deprecated From SHM API v3.3.24: insurance is limited to 5000€ */
     const INSURANCE_AMOUNT_UP_TO_7500_EUROS = 4;
+    /** @deprecated From SHM API v3.3.24: insurance is limited to 5000€ */
     const INSURANCE_AMOUNT_UP_TO_10000_EUROS = 5;
+    /** @deprecated From SHM API v3.3.24: insurance is limited to 5000€ */
     const INSURANCE_AMOUNT_UP_TO_12500_EUROS = 6;
+    /** @deprecated From SHM API v3.3.24: insurance is limited to 5000€ */
     const INSURANCE_AMOUNT_UP_TO_15000_EUROS = 7;
+    /** @deprecated From SHM API v3.3.24: insurance is limited to 5000€ */
     const INSURANCE_AMOUNT_UP_TO_17500_EUROS = 8;
+    /** @deprecated From SHM API v3.3.24: insurance is limited to 5000€ */
     const INSURANCE_AMOUNT_UP_TO_20000_EUROS = 9;
+    /** @deprecated From SHM API v3.3.24: insurance is limited to 5000€ */
     const INSURANCE_AMOUNT_UP_TO_22500_EUROS = 10;
+    /** @deprecated From SHM API v3.3.24: insurance is limited to 5000€ */
     const INSURANCE_AMOUNT_UP_TO_25000_EUROS = 11;
 
     /**
@@ -108,14 +116,6 @@ class Insured extends Option
         return array(
             self::INSURANCE_AMOUNT_UP_TO_2500_EUROS,
             self::INSURANCE_AMOUNT_UP_TO_5000_EUROS,
-            self::INSURANCE_AMOUNT_UP_TO_7500_EUROS,
-            self::INSURANCE_AMOUNT_UP_TO_10000_EUROS,
-            self::INSURANCE_AMOUNT_UP_TO_12500_EUROS,
-            self::INSURANCE_AMOUNT_UP_TO_15000_EUROS,
-            self::INSURANCE_AMOUNT_UP_TO_17500_EUROS,
-            self::INSURANCE_AMOUNT_UP_TO_20000_EUROS,
-            self::INSURANCE_AMOUNT_UP_TO_22500_EUROS,
-            self::INSURANCE_AMOUNT_UP_TO_25000_EUROS,
         );
     }
 
