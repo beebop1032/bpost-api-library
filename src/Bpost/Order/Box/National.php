@@ -2,6 +2,7 @@
 
 namespace Bpost\BpostApiClient\Bpost\Order\Box;
 
+use Bpost\BpostApiClient\Bpost;
 use Bpost\BpostApiClient\Bpost\Order\Box\OpeningHour\Day;
 use Bpost\BpostApiClient\Bpost\Order\Box\Option\Messaging;
 use Bpost\BpostApiClient\Bpost\Order\Box\Option\Option;
@@ -234,7 +235,7 @@ abstract class National extends ComplexAttribute implements IBox
         if (isset($nationalXml->options) && !empty($nationalXml->options)) {
             /** @var SimpleXMLElement $optionData */
             foreach ($nationalXml->options as $optionData) {
-                $optionData = $optionData->children('http://schema.post.be/shm/deepintegration/v3/common');
+                $optionData = $optionData->children(Bpost::NS_V3_COMMON);
 
                 if (in_array($optionData->getName(), array(
                         Messaging::MESSAGING_TYPE_INFO_DISTRIBUTED,

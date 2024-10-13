@@ -2,6 +2,7 @@
 
 namespace Tests\Bpost\Order\Box;
 
+use Bpost\BpostApiClient\Bpost;
 use Bpost\BpostApiClient\Bpost\Order\Box\National;
 use Bpost\BpostApiClient\Bpost\Order\Box\OpeningHour\Day;
 use Bpost\BpostApiClient\Bpost\Order\Box\Option\Messaging;
@@ -165,30 +166,12 @@ EOF;
      */
     private function generateDomDocument(DOMDocument $document, DOMElement $element)
     {
-        $element->setAttribute(
-            'xmlns:common',
-            'http://schema.post.be/shm/deepintegration/v3/common'
-        );
-        $element->setAttribute(
-            'xmlns:tns',
-            'http://schema.post.be/shm/deepintegration/v3/'
-        );
-        $element->setAttribute(
-            'xmlns',
-            'http://schema.post.be/shm/deepintegration/v3/national'
-        );
-        $element->setAttribute(
-            'xmlns:international',
-            'http://schema.post.be/shm/deepintegration/v3/international'
-        );
-        $element->setAttribute(
-            'xmlns:xsi',
-            'http://www.w3.org/2001/XMLSchema-instance'
-        );
-        $element->setAttribute(
-            'xsi:schemaLocation',
-            'http://schema.post.be/shm/deepintegration/v3/'
-        );
+        $element->setAttribute('xmlns:common', Bpost::NS_V3_COMMON);
+        $element->setAttribute('xmlns:tns', Bpost::NS_V3_GLOBAL);
+        $element->setAttribute('xmlns', Bpost::NS_V3_NATIONAL);
+        $element->setAttribute('xmlns:international', Bpost::NS_V3_INTERNATIONAL);
+        $element->setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
+        $element->setAttribute('xsi:schemaLocation', Bpost::NS_V3_GLOBAL);
 
         $document->appendChild($element);
 

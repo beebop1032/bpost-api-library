@@ -2,6 +2,7 @@
 
 namespace Bpost\BpostApiClient\Bpost\Order\Box\Option;
 
+use Bpost\BpostApiClient\Bpost;
 use Bpost\BpostApiClient\Common\XmlHelper;
 use Bpost\BpostApiClient\Exception\BpostLogicException\BpostInvalidValueException;
 use DomDocument;
@@ -137,7 +138,6 @@ class Insured extends Option
      * Return the object as an array for usage in the XML
      *
      * @param DomDocument $document
-     * @param string      $prefix
      *
      * @return DomElement
      *

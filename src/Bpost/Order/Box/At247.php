@@ -2,6 +2,7 @@
 
 namespace Bpost\BpostApiClient\Bpost\Order\Box;
 
+use Bpost\BpostApiClient\Bpost;
 use Bpost\BpostApiClient\Bpost\Order\Box\National\Unregistered;
 use Bpost\BpostApiClient\Bpost\Order\Box\Option\Messaging;
 use Bpost\BpostApiClient\Bpost\Order\ParcelsDepotAddress;
@@ -322,7 +323,7 @@ class At247 extends National
         if (isset($xml->{'at24-7'}->options)) {
             /** @var SimpleXMLElement $optionData */
             foreach ($xml->{'at24-7'}->options as $optionData) {
-                $optionData = $optionData->children('http://schema.post.be/shm/deepintegration/v3/common');
+                $optionData = $optionData->children(Bpost::NS_V3_COMMON);
 
                 if (in_array($optionData->getName(), array(Messaging::MESSAGING_TYPE_INFO_DISTRIBUTED))) {
                     $option = Messaging::createFromXML($optionData);
@@ -365,9 +366,7 @@ class At247 extends National
         }
         if (isset($xml->{'at24-7'}->parcelsDepotAddress)) {
             /** @var SimpleXMLElement $parcelsDepotAddressData */
-            $parcelsDepotAddressData = $xml->{'at24-7'}->parcelsDepotAddress->children(
-                'http://schema.post.be/shm/deepintegration/v3/common'
-            );
+            $parcelsDepotAddressData = $xml->{'at24-7'}->parcelsDepotAddress->children(Bpost::NS_V3_COMMON);
             $at247->setParcelsDepotAddress(
                 ParcelsDepotAddress::createFromXML($parcelsDepotAddressData)
             );

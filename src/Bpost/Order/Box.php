@@ -2,6 +2,7 @@
 
 namespace Bpost\BpostApiClient\Bpost\Order;
 
+use Bpost\BpostApiClient\Bpost;
 use Bpost\BpostApiClient\Common\XmlHelper;
 use Bpost\BpostApiClient\Exception\BpostLogicException\BpostInvalidValueException;
 use Bpost\BpostApiClient\Exception\BpostNotImplementedException;
@@ -232,14 +233,14 @@ class Box
             $box->setSender(
                 Sender::createFromXML(
                     $xml->sender->children(
-                        'http://schema.post.be/shm/deepintegration/v3/common'
+                        Bpost::NS_V3_COMMON
                     )
                 )
             );
         }
         if (isset($xml->nationalBox)) {
             /** @var SimpleXMLElement $nationalBoxData */
-            $nationalBoxData = $xml->nationalBox->children('http://schema.post.be/shm/deepintegration/v3/national');
+            $nationalBoxData = $xml->nationalBox->children(Bpost::NS_V3_NATIONAL);
 
             // build classname based on the tag name
             $className = '\\Bpost\\BpostApiClient\\Bpost\\Order\\Box\\' . ucfirst($nationalBoxData->getName());
@@ -255,7 +256,7 @@ class Box
         }
         if (isset($xml->internationalBox)) {
             /** @var SimpleXMLElement $internationalBoxData */
-            $internationalBoxData = $xml->internationalBox->children('http://schema.post.be/shm/deepintegration/v3/international');
+            $internationalBoxData = $xml->internationalBox->children(Bpost::NS_V3_INTERNATIONAL);
 
             // build classname based on the tag name
             $className = '\\Bpost\\BpostApiClient\\Bpost\\Order\\Box\\' . ucfirst($internationalBoxData->getName());
