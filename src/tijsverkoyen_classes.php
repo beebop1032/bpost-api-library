@@ -1,4 +1,11 @@
 <?php
+/**
+ * @noinspection PhpDeprecationInspection
+ * @noinspection PhpMultipleClassesDeclarationsInOneFile
+ * @noinspection PhpIllegalPsrClassPathInspection
+ * @noinspection PhpFullyQualifiedNameUsageInspection
+ */
+
 namespace TijsVerkoyen\Bpost { /** @deprecated */ class Bpack247 extends \Bpost\BpostApiClient\Bpack247 {} } // src/Bpack247.php
 namespace TijsVerkoyen\Bpost\Bpack247 { /** @deprecated */ class Customer extends \Bpost\BpostApiClient\Bpack247\Customer {} } // src/Bpack247/Customer.php
 namespace TijsVerkoyen\Bpost\Bpack247 { /** @deprecated */ class CustomerPackStation extends \Bpost\BpostApiClient\Bpack247\CustomerPackStation {} } // src/Bpack247/CustomerPackStation.php
