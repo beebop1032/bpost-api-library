@@ -1,5 +1,13 @@
 # Changelog
 
+### 3.6.0
+
+* Add compatibility with AtIntlPugo and AtIntlHome
+* Update insurance amounts
+* Fix options
+* Update restrictions of the form handler
+* Store XML namespaces as PHP constants
+
 ### 3.5.1
 
 * fix: API returns xml-namespaces v3 instead of v5
