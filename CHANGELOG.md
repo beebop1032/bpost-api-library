@@ -1,5 +1,9 @@
 # Changelog
 
+### 3.7.0
+
+* Add info in the additional customer reference for bpost statistics
+
 ### 3.6.0
 
 * Add compatibility with AtIntlPugo and AtIntlHome

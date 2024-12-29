@@ -26,7 +26,7 @@ class Bpack247
     const API_URL = 'http://www.bpack247.be/BpostRegistrationWebserviceREST/servicecontroller.svc';
 
     // current version
-    const VERSION = '3.6.0';
+    const VERSION = '3.7.0';
 
     /**
      * The account id

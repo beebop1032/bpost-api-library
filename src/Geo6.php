@@ -25,7 +25,7 @@ class Geo6
     const API_URL = 'https://pudo.bpost.be/Locator';
 
     // current version
-    const VERSION = '3.6.0';
+    const VERSION = '3.7.0';
 
     /**
      * @see getPointType
