@@ -74,7 +74,8 @@ class OrderTest extends PHPUnit_Framework_TestCase
         $box->setSender($sender);
         $box->setNationalBox($atBpost);
         $box->setRemark('bpack@bpost VAS 038 - COD+SAT+iD');
-        $box->setAdditionalCustomerReference('Reference that can be used for cross-referencing');
+        $box->setAdditionalCustomerReference('Reference used for bpost statistics');
+        $box->setAdditionalCustomerReferenceSuffix('PHPx.y');
 
         $self->setBoxes(array());
         $this->assertCount(0, $self->getBoxes());
@@ -330,7 +331,7 @@ XML;
       </atBpost>
     </tns:nationalBox>
     <tns:remark>bpack@bpost VAS 038 - COD+SAT+iD</tns:remark>
-    <tns:additionalCustomerReference>Reference that can be used for cross-referencing</tns:additionalCustomerReference>
+    <tns:additionalCustomerReference>Reference used for bpost statistics+PHPx.y</tns:additionalCustomerReference>
   </tns:box>
 </tns:order>
 

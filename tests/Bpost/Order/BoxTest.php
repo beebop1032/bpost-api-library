@@ -69,6 +69,7 @@ class BoxTest extends PHPUnit_Framework_TestCase
                 ),
             ),
             'remark' => 'remark',
+            'additionalCustomerReferenceSuffix' => 'PHPx.y',
             'barcode' => 'BARCODE',
         );
 
@@ -120,6 +121,12 @@ class BoxTest extends PHPUnit_Framework_TestCase
         $box->appendChild($sender);
         $box->appendChild($nationalBox);
         $box->appendChild($expectedDocument->createElement('remark', $data['remark']));
+        $box->appendChild(
+            $expectedDocument->createElement(
+                'additionalCustomerReference',
+                '+' . $data['additionalCustomerReferenceSuffix']
+            )
+        );
         $box->appendChild($expectedDocument->createElement('barcode', $data['barcode']));
 
         $actualDocument = self::createDomDocument();
@@ -165,6 +172,7 @@ class BoxTest extends PHPUnit_Framework_TestCase
         $box->setNationalBox($atHome);
         $box->setRemark($data['remark']);
         $box->setBarcode($data['barcode']);
+        $box->setAdditionalCustomerReferenceSuffix($data['additionalCustomerReferenceSuffix']);
 
         $actualDocument->appendChild(
             $box->toXML($actualDocument, null)
@@ -212,6 +220,7 @@ class BoxTest extends PHPUnit_Framework_TestCase
                 ),
             ),
             'remark' => 'remark',
+            'additionalCustomerReferenceSuffix' => 'PHPx.y',
             'barcode' => 'BARCODE',
         );
         $expectedDocument = self::createDomDocument();
@@ -266,6 +275,12 @@ class BoxTest extends PHPUnit_Framework_TestCase
         $box->appendChild($sender);
         $box->appendChild($nationalBox);
         $box->appendChild($expectedDocument->createElement('remark', $data['remark']));
+        $box->appendChild(
+            $expectedDocument->createElement(
+                'additionalCustomerReference',
+                '+' . $data['additionalCustomerReferenceSuffix']
+            )
+        );
         $box->appendChild($expectedDocument->createElement('barcode', $data['barcode']));
 
         $actualDocument = self::createDomDocument();
@@ -309,6 +324,7 @@ class BoxTest extends PHPUnit_Framework_TestCase
         $box->setSender($sender);
         $box->setInternationalBox($international);
         $box->setRemark($data['remark']);
+        $box->setAdditionalCustomerReferenceSuffix($data['additionalCustomerReferenceSuffix']);
         $box->setBarcode($data['barcode']);
 
         $actualDocument->appendChild(

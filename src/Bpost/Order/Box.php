@@ -59,6 +59,14 @@ class Box
     /** @var string */
     private $additionalCustomerReference;
 
+    /** @var string */
+    private $additionalCustomerReferenceSuffix;
+
+    public function __construct()
+    {
+        $this->setAdditionalCustomerReferenceSuffix(sprintf('PHP%d.%d', PHP_MAJOR_VERSION, PHP_MINOR_VERSION));
+    }
+
     /**
      * @param \Bpost\BpostApiClient\Bpost\Order\Box\International $internationalBox
      */
@@ -176,6 +184,24 @@ class Box
     public function getAdditionalCustomerReference()
     {
         return $this->additionalCustomerReference;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAdditionalCustomerReferenceSuffix()
+    {
+        return $this->additionalCustomerReferenceSuffix;
+    }
+
+    /**
+     * Must be used only for phpunit
+     *
+     * @param string $additionalCustomerReferenceSuffix
+     */
+    public function setAdditionalCustomerReferenceSuffix($additionalCustomerReferenceSuffix)
+    {
+        $this->additionalCustomerReferenceSuffix = (string) $additionalCustomerReferenceSuffix;
     }
 
     /**
@@ -361,13 +387,16 @@ class Box
      */
     private function additionalCustomerReferenceToXML(DOMDocument $document, $prefix, DOMElement $box)
     {
-        if ($this->getAdditionalCustomerReference() !== null) {
-            $box->appendChild(
-                $document->createElement(
-                    XmlHelper::getPrefixedTagName('additionalCustomerReference', $prefix),
-                    $this->getAdditionalCustomerReference()
-                )
-            );
-        }
+        $additionalCustomerReference = $this->getAdditionalCustomerReference()
+            . '+' . $this->getAdditionalCustomerReferenceSuffix();
+        $additionalCustomerReferenceSplits = str_split($additionalCustomerReference, 50);
+        $additionalCustomerReference = $additionalCustomerReferenceSplits[0];
+        $box->appendChild(
+            $document->createElement(
+                XmlHelper::getPrefixedTagName('additionalCustomerReference', $prefix),
+                $additionalCustomerReference
+            )
+        );
+
     }
 }

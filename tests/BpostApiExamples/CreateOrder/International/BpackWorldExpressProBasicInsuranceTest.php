@@ -44,7 +44,8 @@ class BpackWorldExpressProBasicInsuranceTest extends PHPUnit_Framework_TestCase
         $box->setSender($sender = new Sender());
         $box->setInternationalBox($internationalBox = new International());
         $box->setRemark('bpack world Express Pro - Ins');
-        $box->setAdditionalCustomerReference('Reference that can be used for cross-referencing');
+        $box->setAdditionalCustomerReference('Reference used for bpost statistics');
+        $box->setAdditionalCustomerReferenceSuffix('PHPx.y');
 
         $sender->setName('SENDER NAME');
         $sender->setCompany('SENDER COMPANY');
@@ -188,7 +189,7 @@ class BpackWorldExpressProBasicInsuranceTest extends PHPUnit_Framework_TestCase
             </international:international>
         </tns:internationalBox>
         <tns:remark>bpack world Express Pro - Ins</tns:remark>
-        <tns:additionalCustomerReference>Reference that can be used for cross-referencing</tns:additionalCustomerReference>
+        <tns:additionalCustomerReference>Reference used for bpost statistics+PHPx.y</tns:additionalCustomerReference>
     </tns:box>
 </tns:order>
 

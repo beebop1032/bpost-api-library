@@ -44,7 +44,8 @@ class BpackEuropeBusinessSecondPresentationAndBasicInsuranceTest extends PHPUnit
         $box->setSender($sender = new Sender());
         $box->setInternationalBox($internationalBox = new International());
         $box->setRemark('bpack Europe Business - Ins+2ndPr');
-        $box->setAdditionalCustomerReference('Reference that can be used for cross-referencing');
+        $box->setAdditionalCustomerReference('Reference used for bpost statistics');
+        $box->setAdditionalCustomerReferenceSuffix('PHPx.y');
 
         $sender->setName('SENDER NAME');
         $sender->setCompany('SENDER COMPANY');
@@ -148,7 +149,7 @@ class BpackEuropeBusinessSecondPresentationAndBasicInsuranceTest extends PHPUnit
             </international:international>
         </tns:internationalBox>
         <tns:remark>bpack Europe Business - Ins+2ndPr</tns:remark>
-        <tns:additionalCustomerReference>Reference that can be used for cross-referencing</tns:additionalCustomerReference>
+        <tns:additionalCustomerReference>Reference used for bpost statistics+PHPx.y</tns:additionalCustomerReference>
     </tns:box>
 </tns:order>
 
