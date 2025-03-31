@@ -62,6 +62,7 @@ class AtIntlPugo extends International
     {
         return array(
             Product::PRODUCT_NAME_BPACK_AT_BPOST,
+            Product::PRODUCT_NAME_BPACK_AT_BPOST_INTERNATIONAL,
         );
     }
 
