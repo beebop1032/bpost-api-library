@@ -1,14 +1,8 @@
 <?php
-
 namespace Bpost\BpostApiClient\Bpost\Order;
 
-use Bpost\BpostApiClient\Bpost;
-use Bpost\BpostApiClient\Common\XmlHelper;
 use Bpost\BpostApiClient\Exception\BpostLogicException\BpostInvalidValueException;
 use Bpost\BpostApiClient\Exception\BpostNotImplementedException;
-use DOMDocument;
-use DOMElement;
-use SimpleXMLElement;
 
 /**
  * bPost Box class
@@ -17,6 +11,7 @@ use SimpleXMLElement;
  */
 class Box
 {
+
     const BOX_STATUS_OPEN = 'OPEN';
     const BOX_STATUS_PENDING = 'PENDING';
     const BOX_STATUS_PRINTED = 'PRINTED';
@@ -59,13 +54,16 @@ class Box
     /** @var string */
     private $additionalCustomerReference;
 
-    /** @var string */
-    private $additionalCustomerReferenceSuffix;
+    public $email;
 
-    public function __construct()
-    {
-        $this->setAdditionalCustomerReferenceSuffix(sprintf('PHP%d.%d', PHP_MAJOR_VERSION, PHP_MINOR_VERSION));
-    }
+    public $mobilePhone;
+
+    public $messageLanguage;
+
+    public $receiverName;
+
+    public $requestedDeliveryDate;
+
 
     /**
      * @param \Bpost\BpostApiClient\Bpost\Order\Box\International $internationalBox
@@ -133,7 +131,6 @@ class Box
 
     /**
      * @param string $status
-     *
      * @throws BpostInvalidValueException
      */
     public function setStatus($status)
@@ -175,7 +172,7 @@ class Box
      */
     public function setAdditionalCustomerReference($additionalCustomerReference)
     {
-        $this->additionalCustomerReference = (string) $additionalCustomerReference;
+        $this->additionalCustomerReference = (string)$additionalCustomerReference;
     }
 
     /**
@@ -184,24 +181,6 @@ class Box
     public function getAdditionalCustomerReference()
     {
         return $this->additionalCustomerReference;
-    }
-
-    /**
-     * @return string
-     */
-    public function getAdditionalCustomerReferenceSuffix()
-    {
-        return $this->additionalCustomerReferenceSuffix;
-    }
-
-    /**
-     * Must be used only for phpunit
-     *
-     * @param string $additionalCustomerReferenceSuffix
-     */
-    public function setAdditionalCustomerReferenceSuffix($additionalCustomerReferenceSuffix)
-    {
-        $this->additionalCustomerReferenceSuffix = (string) $additionalCustomerReferenceSuffix;
     }
 
     /**
@@ -226,14 +205,18 @@ class Box
     /**
      * Return the object as an array for usage in the XML
      *
-     * @param DomDocument $document
-     * @param string      $prefix
-     *
-     * @return DomElement
+     * @param  \DomDocument $document
+     * @param  string       $prefix
+     * @return \DomElement
      */
-    public function toXML(DOMDocument $document, $prefix = null)
+    public function toXML(\DOMDocument $document, $prefix = null)
     {
-        $box = $document->createElement(XmlHelper::getPrefixedTagName('box', $prefix));
+        $tagName = 'box';
+        if ($prefix !== null) {
+            $tagName = $prefix . ':' . $tagName;
+        }
+
+        $box = $document->createElement($tagName);
 
         $this->senderToXML($document, $prefix, $box);
         $this->boxToXML($document, $prefix, $box);
@@ -245,50 +228,55 @@ class Box
     }
 
     /**
-     * @param SimpleXMLElement $xml
+     * @param  \SimpleXMLElement $xml
      *
      * @return Box
-     *
      * @throws BpostInvalidValueException
      * @throws BpostNotImplementedException
      */
-    public static function createFromXML(SimpleXMLElement $xml)
+    public static function createFromXML(\SimpleXMLElement $xml)
     {
         $box = new Box();
         if (isset($xml->sender)) {
             $box->setSender(
                 Sender::createFromXML(
                     $xml->sender->children(
-                        Bpost::NS_V3_COMMON
+                        'http://schema.post.be/shm/deepintegration/v3/common'
                     )
                 )
             );
         }
         if (isset($xml->nationalBox)) {
-            /** @var SimpleXMLElement $nationalBoxData */
-            $nationalBoxData = $xml->nationalBox->children(Bpost::NS_V3_NATIONAL);
+            /** @var \SimpleXMLElement $nationalBoxData */
+            $nationalBoxData = $xml->nationalBox->children('http://schema.post.be/shm/deepintegration/v3/national');
 
             // build classname based on the tag name
+            $className = '\\Bpost\\BpostApiClient\\Bpost\\Order\\Box\\' . ucfirst($nationalBoxData->getName());
             if ($nationalBoxData->getName() == 'at24-7') {
                 $className = '\\Bpost\\BpostApiClient\\Bpost\\Order\\Box\\At247';
-            } else {
-                $className = '\\Bpost\\BpostApiClient\\Bpost\\Order\\Box\\' . ucfirst($nationalBoxData->getName());
             }
 
-            XmlHelper::assertMethodCreateFromXmlExists($className);
+            if (!method_exists($className, 'createFromXML')) {
+                throw new BpostNotImplementedException('No createFromXML found into ' . $className);
+            }
 
-            $nationalBox = call_user_func(array($className, 'createFromXML'), $nationalBoxData);
+            $nationalBox = call_user_func(
+                array($className, 'createFromXML'),
+                $nationalBoxData
+            );
 
             $box->setNationalBox($nationalBox);
         }
         if (isset($xml->internationalBox)) {
-            /** @var SimpleXMLElement $internationalBoxData */
-            $internationalBoxData = $xml->internationalBox->children(Bpost::NS_V3_INTERNATIONAL);
+            /** @var \SimpleXMLElement $internationalBoxData */
+            $internationalBoxData = $xml->internationalBox->children('http://schema.post.be/shm/deepintegration/v3/international');
 
             // build classname based on the tag name
             $className = '\\Bpost\\BpostApiClient\\Bpost\\Order\\Box\\' . ucfirst($internationalBoxData->getName());
 
-            XmlHelper::assertMethodCreateFromXmlExists($className);
+            if (!method_exists($className, 'createFromXML')) {
+                throw new BpostNotImplementedException('No createFromXML found into ' . $className);
+            }
 
             $internationalBox = call_user_func(
                 array($className, 'createFromXML'),
@@ -301,7 +289,7 @@ class Box
             $box->setRemark((string) $xml->remark);
         }
         if (isset($xml->additionalCustomerReference) && $xml->additionalCustomerReference != '') {
-            $box->setAdditionalCustomerReference((string) $xml->additionalCustomerReference);
+            $box->setAdditionalCustomerReference((string)$xml->additionalCustomerReference);
         }
         if (!empty($xml->barcode)) {
             $box->setBarcode((string) $xml->barcode);
@@ -314,16 +302,20 @@ class Box
     }
 
     /**
-     * @param DOMDocument $document
+     * @param \DOMDocument $document
      * @param $prefix
-     * @param DOMElement $box
+     * @param \DOMElement $box
      */
-    private function barcodeToXML(DOMDocument $document, $prefix, DOMElement $box)
+    private function barcodeToXML(\DOMDocument $document, $prefix, \DOMElement $box)
     {
         if ($this->getBarcode() !== null) {
+            $tagName = 'barcode';
+            if ($prefix !== null) {
+                $tagName = $prefix . ':' . $tagName;
+            }
             $box->appendChild(
                 $document->createElement(
-                    XmlHelper::getPrefixedTagName('barcode', $prefix),
+                    $tagName,
                     $this->getBarcode()
                 )
             );
@@ -331,30 +323,102 @@ class Box
     }
 
     /**
-     * @param DOMDocument $document
+     * @param \DOMDocument $document
      * @param $prefix
-     * @param DOMElement $box
+     * @param \DOMElement $box
      */
-    private function boxToXML(DOMDocument $document, $prefix, DOMElement $box)
+    private function boxToXML(\DOMDocument $document, $prefix, \DOMElement $box)
     {
+        $nationalOrInternational = false;
+
         if ($this->getNationalBox() !== null) {
-            $box->appendChild(
-                $this->getNationalBox()->toXML($document, $prefix)
-            );
+            $nationalOrInternational = $this->getNationalBox()->toXML($document, $prefix);
         }
+
         if ($this->getInternationalBox() !== null) {
+            $nationalOrInternational = $this->getInternationalBox()->toXML($document, $prefix);
+        }
+
+        if($nationalOrInternational instanceof \DOMElement) {
+            $firstChild = $nationalOrInternational->firstChild;
+
+
+            if ($this->getEmail() !== null) {
+
+                $unregistered  = $document->createElement(
+                    'unregistered'
+                );
+
+                if ($this->getMessageLanguage() !== null) {
+                    $tagName = 'language';
+                    $unregistered->appendChild(
+                        $document->createElement(
+                            $tagName,
+                            $this->getMessageLanguage()
+                        )
+                    );
+                }
+                if ($this->getMobilePhone() !== null) {
+                    $tagName = 'mobilePhone';
+
+                    $unregistered->appendChild(
+                        $document->createElement(
+                            $tagName,
+                            $this->getMobilePhone()
+                        )
+                    );
+                }
+
+                if ($this->getEmail() !== null) {
+                    $tagName = 'emailAddress';
+                    $unregistered->appendChild(
+                        $document->createElement(
+                            $tagName,
+                            $this->getEmail()
+                        )
+                    );
+                }
+
+
+                $firstChild->appendChild(
+                    $unregistered
+                );
+
+                if ($this->getReceiverName() !== null) {
+                    $tagName = 'receiverName';
+                    $firstChild->appendChild(
+                        $document->createElement(
+                            $tagName,
+                            $this->getReceiverName()
+                        )
+                    );
+                }
+
+
+                if ($this->getRequestedDeliveryDate() !== null) {
+                    $tagName = 'requestedDeliveryDate';
+
+                    $firstChild->appendChild(
+                        $document->createElement(
+                            $tagName,
+                            $this->getRequestedDeliveryDate()
+                        )
+                    );
+                }
+            }
+
             $box->appendChild(
-                $this->getInternationalBox()->toXML($document, $prefix)
+                $nationalOrInternational
             );
         }
     }
 
     /**
-     * @param DOMDocument $document
+     * @param \DOMDocument $document
      * @param $prefix
-     * @param DOMElement $box
+     * @param \DOMElement $box
      */
-    private function senderToXML(DOMDocument $document, $prefix, DOMElement $box)
+    private function senderToXML(\DOMDocument $document, $prefix, \DOMElement $box)
     {
         if ($this->getSender() !== null) {
             $box->appendChild(
@@ -364,16 +428,20 @@ class Box
     }
 
     /**
-     * @param DOMDocument $document
+     * @param \DOMDocument $document
      * @param $prefix
-     * @param DOMElement $box
+     * @param \DOMElement $box
      */
-    private function remarkToXML(DOMDocument $document, $prefix, DOMElement $box)
+    private function remarkToXML(\DOMDocument $document, $prefix, \DOMElement $box)
     {
         if ($this->getRemark() !== null) {
+            $tagName = 'remark';
+            if ($prefix !== null) {
+                $tagName = $prefix . ':' . $tagName;
+            }
             $box->appendChild(
                 $document->createElement(
-                    XmlHelper::getPrefixedTagName('remark', $prefix),
+                    $tagName,
                     $this->getRemark()
                 )
             );
@@ -381,22 +449,78 @@ class Box
     }
 
     /**
-     * @param DOMDocument $document
+     * @param \DOMDocument $document
      * @param $prefix
-     * @param DOMElement $box
+     * @param \DOMElement $box
      */
-    private function additionalCustomerReferenceToXML(DOMDocument $document, $prefix, DOMElement $box)
+    private function additionalCustomerReferenceToXML(\DOMDocument $document, $prefix, \DOMElement $box)
     {
-        $additionalCustomerReference = $this->getAdditionalCustomerReference()
-            . '+' . $this->getAdditionalCustomerReferenceSuffix();
-        $additionalCustomerReferenceSplits = str_split($additionalCustomerReference, 50);
-        $additionalCustomerReference = $additionalCustomerReferenceSplits[0];
-        $box->appendChild(
-            $document->createElement(
-                XmlHelper::getPrefixedTagName('additionalCustomerReference', $prefix),
-                $additionalCustomerReference
-            )
-        );
+        if ($this->getAdditionalCustomerReference() !== null) {
+            $tagName = 'additionalCustomerReference';
+            if ($prefix !== null) {
+                $tagName = $prefix . ':' . $tagName;
+            }
+            $box->appendChild(
+                $document->createElement(
+                    $tagName,
+                    $this->getAdditionalCustomerReference()
+                )
+            );
+        }
+    }
 
+    public function getEmail()
+    {
+        return $this->email;
+    }
+
+    public function setEmail($email)
+    {
+        $this->email = $email;
+        return $this;
+    }
+
+    public function getMobilePhone()
+    {
+        return $this->mobilePhone;
+    }
+
+    public function setMobilePhone($mobilePhone)
+    {
+        $this->mobilePhone = $mobilePhone;
+        return $this;
+    }
+
+    public function getMessageLanguage()
+    {
+        return $this->messageLanguage;
+    }
+
+    public function setMessageLanguage($messageLanguage)
+    {
+        $this->messageLanguage = $messageLanguage;
+        return $this;
+    }
+
+    public function getReceiverName()
+    {
+        return $this->receiverName;
+    }
+
+    public function setReceiverName($receiverName)
+    {
+        $this->receiverName = $receiverName;
+        return $this;
+    }
+
+    public function getRequestedDeliveryDate()
+    {
+        return $this->requestedDeliveryDate;
+    }
+
+    public function setRequestedDeliveryDate($requestedDeliveryDate)
+    {
+        $this->requestedDeliveryDate = $requestedDeliveryDate;
+        return $this;
     }
 }
